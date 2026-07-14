@@ -1,4 +1,4 @@
-const CACHE = 'dalpack-magazyn-v3';
+const CACHE = 'dalpack-magazyn-v4';
 const ASSETS = [
   './',
   './index.html',
