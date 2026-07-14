@@ -66,7 +66,7 @@
     position: sticky; top: 0; z-index: 20;
     background: radial-gradient(160% 170% at 4% 0%, #17825F 0%, #0C3A30 62%);
     color: #fff;
-    padding: env(safe-area-inset-top) 14px 12px;
+    padding: env(safe-area-inset-top) 14px 10px;
     border-bottom: 3px solid var(--gold);
   }
   .topbar-row { display: flex; align-items: center; gap: 10px; padding-top: 12px; }
@@ -92,30 +92,46 @@
     background: transparent; border: 1px solid rgba(255,255,255,0.32);
     font-size: 1.25rem; color: #fff;
   }
-  .search-row { margin-top: 14px; }
+  .search-row { margin-top: 12px; }
   .search-row input {
     width: 100%; background: transparent; border: 0;
     border-bottom: 1.5px solid rgba(255,255,255,0.28);
-    color: #fff; padding: 10px 2px; outline: none;
+    color: #fff; padding: 9px 2px; outline: none;
     font: 400 16px var(--font-body); border-radius: 0;
   }
   .search-row input::placeholder { color: rgba(255,255,255,0.45); }
   .search-row input:focus { border-bottom-color: var(--gold); }
   .search-row input:focus-visible { outline: none; }
-  .tabs { display: flex; gap: 8px; margin-top: 14px; }
+  .tabs { display: flex; gap: 6px; margin-top: 12px; }
   .tab {
-    flex: 1; height: 42px; border-radius: 7px;
-    font: 700 12px/1 var(--font-head);
-    letter-spacing: .1em; text-transform: uppercase;
+    flex: 1; height: 40px; border-radius: 7px; padding: 0 2px;
+    font: 700 10.5px/1 var(--font-head);
+    letter-spacing: .07em; text-transform: uppercase;
     background: transparent; border: 1.5px solid rgba(255,255,255,0.34);
     color: rgba(255,255,255,0.88); white-space: nowrap;
   }
   .tab.active { background: var(--gold); border-color: var(--gold); color: var(--brand); }
+  .chips {
+    display: flex; gap: 7px; margin-top: 10px; overflow-x: auto;
+    padding-bottom: 3px; scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; padding: 8px 13px; border-radius: 100px;
+    font: 600 10.5px/1 var(--font-body);
+    letter-spacing: .1em; text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.82);
+    white-space: nowrap;
+  }
+  .chip.active { background: var(--gold); border-color: var(--gold); color: var(--brand); }
+  .chip.low-chip { border-color: rgba(224,130,110,0.65); color: #EFA593; }
+  .chip.low-chip.active { background: #C2523F; border-color: #C2523F; color: #fff; }
   .summary {
-    margin-top: 10px; text-align: center;
+    margin-top: 9px; text-align: center;
     font: 400 12.5px/1.4 var(--font-body); color: rgba(255,255,255,0.68);
   }
   .summary b { color: var(--gold-soft); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .summary .warn { color: #EFA593; font-weight: 600; }
 
   /* ---- lista ---- */
   .list { padding: 10px 14px 0; max-width: 640px; margin: 0 auto; }
@@ -141,11 +157,14 @@
     padding: 10px 12px; border-bottom: 1px solid var(--border); min-height: 60px;
   }
   .item:last-child { border-bottom: none; }
+  .item.low { box-shadow: inset 3px 0 0 var(--danger); }
+  .item.planned { box-shadow: inset 3px 0 0 var(--gold); }
   .item-name {
     flex: 1; text-align: left; padding: 6px 0; min-width: 0;
     font: 400 15.5px/1.35 var(--font-body); color: var(--text);
     overflow-wrap: anywhere;
   }
+  .item-sub { display: block; margin-top: 3px; font: 400 12px/1.3 var(--font-body); color: var(--text2); }
   .item-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex: none; }
   .badge-line {
     font: 600 10.5px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase;
@@ -159,6 +178,10 @@
     font: 600 11px/1 var(--font-body); background: var(--surface2);
     border-radius: 100px; padding: 4px 10px; color: var(--text2);
     font-variant-numeric: tabular-nums;
+  }
+  .badge-low {
+    font: 700 10.5px/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase;
+    color: var(--danger); white-space: nowrap;
   }
   .stepper { display: flex; align-items: center; gap: 3px; flex: none; }
   .step-btn {
@@ -175,7 +198,29 @@
     font-variant-numeric: tabular-nums; letter-spacing: -.01em;
   }
   .step-val.zero { color: var(--text2); font-weight: 500; }
+  .stepper.small .step-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+  .stepper.small .step-val { min-width: 42px; font-size: 16px; }
+  .check-btn {
+    width: 46px; height: 46px; border-radius: 7px; flex: none;
+    background: var(--gold); color: var(--brand);
+    font: 800 1.2rem/1 var(--font-head);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .check-btn:active { background: var(--gold-hover); }
   .empty-note { text-align: center; color: var(--text2); padding: 44px 20px; }
+
+  .load-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    margin: 14px 0 2px; padding: 12px 14px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+  .load-bar .lb-txt { font: 600 11px/1.5 var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--text2); }
+  .load-bar .lb-txt b { color: var(--gold-ink); font: 800 15px var(--font-head); }
+  .load-bar button {
+    font: 700 10.5px/1 var(--font-head); letter-spacing: .08em; text-transform: uppercase;
+    border: 1.5px solid var(--border); border-radius: 7px; padding: 10px 12px; color: var(--text2);
+  }
 
   .fab {
     position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 25;
@@ -225,6 +270,8 @@
     background: var(--surface2); padding: 0 12px; outline: none;
   }
   .field input:focus, .field select:focus { border-color: var(--gold); }
+  .field-row { display: flex; gap: 10px; }
+  .field-row .field { flex: 1; min-width: 0; }
   .loc-block {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
     background: var(--surface2); border: 1px solid var(--border);
@@ -234,6 +281,7 @@
     font: 600 11px/1.4 var(--font-body); letter-spacing: .12em; text-transform: uppercase;
     color: var(--text2);
   }
+  .loc-block.min-block { background: transparent; border-style: dashed; }
   .transfer-row { display: flex; gap: 10px; margin: 4px 0 14px; }
   .transfer-btn {
     flex: 1; height: 44px; border-radius: 7px; border: 1.5px dashed var(--border);
@@ -251,6 +299,7 @@
     font: 800 26px/1 var(--font-head); color: var(--gold-ink);
     letter-spacing: -.01em; font-variant-numeric: tabular-nums;
   }
+  .sheet-total b.low { color: var(--danger); }
   .btn-row { display: flex; gap: 10px; margin-top: 8px; }
   .btn {
     flex: 1; height: 50px; border-radius: 7px;
@@ -270,6 +319,21 @@
   .menu-item:last-of-type { border-bottom: none; }
   .menu-item .mi-icon { font-size: 1.15rem; width: 28px; text-align: center; }
   .menu-item.danger { color: var(--danger); }
+
+  .hist-item {
+    display: flex; align-items: baseline; gap: 12px;
+    padding: 12px 2px; border-bottom: 1px solid var(--border);
+  }
+  .hist-time {
+    flex: none; width: 86px;
+    font: 600 10.5px/1.5 var(--font-body); letter-spacing: .06em;
+    text-transform: uppercase; color: var(--text2);
+    font-variant-numeric: tabular-nums;
+  }
+  .hist-txt { font: 400 14px/1.45 var(--font-body); color: var(--text); overflow-wrap: anywhere; }
+  .hist-txt b { font-variant-numeric: tabular-nums; }
+  .hist-txt .plus { color: #1E9273; font-weight: 700; }
+  .hist-txt .minus { color: var(--danger); font-weight: 700; }
 
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -306,7 +370,9 @@
     <button class="tab active" data-tab="all">Wszystko</button>
     <button class="tab" data-tab="auto">Auto</button>
     <button class="tab" data-tab="opole">Opole</button>
+    <button class="tab" data-tab="load">Załadunek</button>
   </div>
+  <div class="chips" id="catChips"></div>
   <div class="summary" id="summary"></div>
 </header>
 
@@ -340,14 +406,28 @@
       <button class="step-btn" data-loc="opole" data-d="1">+</button>
     </div>
   </div>
+  <div class="loc-block min-block">
+    <span class="loc-name">Stan minimalny (Σ)</span>
+    <div class="stepper small">
+      <button class="step-btn" data-min data-d="-1">−</button>
+      <button class="step-val" id="sheetMinVal"></button>
+      <button class="step-btn" data-min data-d="1">+</button>
+    </div>
+  </div>
   <div class="sheet-total">Razem <b id="sheetTotal"></b></div>
   <div class="field">
     <label for="editName">Nazwa</label>
     <input type="text" id="editName">
   </div>
-  <div class="field">
-    <label for="editCat">Kategoria</label>
-    <select id="editCat"></select>
+  <div class="field-row">
+    <div class="field">
+      <label for="editCat">Kategoria</label>
+      <select id="editCat"></select>
+    </div>
+    <div class="field" style="flex:0 0 118px">
+      <label for="editUnit">Jednostka</label>
+      <select id="editUnit"></select>
+    </div>
   </div>
   <div class="btn-row">
     <button class="btn danger-ghost" id="deleteBtn" aria-label="Usuń">🗑</button>
@@ -363,9 +443,15 @@
     <label for="newName">Nazwa</label>
     <input type="text" id="newName" placeholder="np. Wkręty 160 mm">
   </div>
-  <div class="field">
-    <label for="newCat">Kategoria</label>
-    <select id="newCat"></select>
+  <div class="field-row">
+    <div class="field">
+      <label for="newCat">Kategoria</label>
+      <select id="newCat"></select>
+    </div>
+    <div class="field" style="flex:0 0 118px">
+      <label for="newUnit">Jednostka</label>
+      <select id="newUnit"></select>
+    </div>
   </div>
   <div class="loc-block">
     <span class="loc-name">Na aucie</span>
@@ -393,10 +479,22 @@
   <div class="sheet-grip"></div>
   <h2>Ustawienia</h2>
   <div class="sub" id="menuInfo"></div>
+  <button class="menu-item" id="historyBtn"><span class="mi-icon">🕓</span> Historia zmian</button>
   <button class="menu-item" id="exportBtn"><span class="mi-icon">💾</span> Eksportuj dane (kopia zapasowa)</button>
   <button class="menu-item" id="importBtn"><span class="mi-icon">📥</span> Importuj dane z pliku</button>
   <button class="menu-item danger" id="resetBtn"><span class="mi-icon">♻️</span> Przywróć dane startowe</button>
   <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+</div>
+
+<div class="sheet" id="histSheet">
+  <div class="sheet-grip"></div>
+  <h2>Historia zmian</h2>
+  <div class="sub" id="histInfo"></div>
+  <div id="histList"></div>
+  <div class="btn-row">
+    <button class="btn ghost" id="clearHistBtn">Wyczyść historię</button>
+    <button class="btn primary" id="closeHistBtn">Zamknij</button>
+  </div>
 </div>
 
 <div class="toast" id="toast">
@@ -409,8 +507,10 @@
   'use strict';
 
   var STORAGE_KEY = 'dalpack-magazyn-v1';
-
   var CATEGORIES = ['Mocowanie', 'Pakowanie', 'Folia', 'Pasy', 'Czujniki'];
+  var UNITS = ['szt.', 'm', 'rolka', 'kg', 'op.', 'kpl.', 'para'];
+  var HISTORY_MAX = 300;
+  var MERGE_WINDOW_MS = 2 * 60 * 1000; // scalanie serii +1/+1/+1 w jeden wpis
 
   // Stan startowy — odwzorowanie bazy Notion „Magazyn materiałów”
   var SEED = [
@@ -435,19 +535,37 @@
 
   function seedItems() {
     return SEED.map(function (row, i) {
-      return { id: 's' + i, name: row[0], cat: row[1], auto: 0, opole: 0 };
+      return { id: 's' + i, name: row[0], cat: row[1], auto: 0, opole: 0, min: 0, unit: 'szt.' };
     });
   }
 
+  function normalizeItem(x, i) {
+    return {
+      id: x.id || 'i' + Date.now() + '_' + i,
+      name: x.name,
+      cat: typeof x.cat === 'string' ? x.cat : 'Mocowanie',
+      auto: typeof x.auto === 'number' ? x.auto : 0,
+      opole: typeof x.opole === 'number' ? x.opole : 0,
+      min: typeof x.min === 'number' && x.min > 0 ? x.min : 0,
+      unit: typeof x.unit === 'string' && x.unit ? x.unit : 'szt.'
+    };
+  }
+
   function loadState() {
+    var s = null;
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        var s = JSON.parse(raw);
-        if (s && Array.isArray(s.items)) return s;
-      }
+      if (raw) s = JSON.parse(raw);
     } catch (e) { /* uszkodzone dane — start od nowa */ }
-    return { items: seedItems(), collapsed: {}, tab: 'all', updated: null };
+    if (!s || !Array.isArray(s.items)) {
+      s = { items: seedItems(), collapsed: {}, tab: 'all', updated: null };
+    }
+    s.items = s.items.filter(function (x) { return x && typeof x.name === 'string'; }).map(normalizeItem);
+    s.collapsed = s.collapsed || {};
+    s.catFilter = s.catFilter || null;
+    s.loadPlan = s.loadPlan || {};
+    s.history = Array.isArray(s.history) ? s.history : [];
+    return s;
   }
 
   var state = loadState();
@@ -466,10 +584,16 @@
     return (Math.round(n * 100) / 100).toString().replace('.', ',');
   }
 
+  function unitSuffix(it) { return it.unit && it.unit !== 'szt.' ? ' ' + it.unit : ''; }
+
   function findItem(id) {
     for (var i = 0; i < state.items.length; i++) if (state.items[i].id === id) return state.items[i];
     return null;
   }
+
+  function totalOf(it) { return (it.auto || 0) + (it.opole || 0); }
+  function isLow(it) { return (it.min || 0) > 0 && totalOf(it) < it.min; }
+  function lowCount() { return state.items.filter(isLow).length; }
 
   function allCats() {
     var names = CATEGORIES.slice();
@@ -479,12 +603,78 @@
     return names;
   }
 
+  // ---------- historia ----------
+  function logEvent(kind, data) {
+    var now = Date.now();
+    var h = state.history;
+    if (kind === 'qty' || kind === 'transfer' || kind === 'load') {
+      var last = h[0];
+      if (last && last.kind === kind && last.id === data.id && last.loc === data.loc &&
+          last.dir === data.dir && (now - last.t) < MERGE_WINDOW_MS) {
+        last.delta = Math.round((last.delta + data.delta) * 100) / 100;
+        last.t = now;
+        if (kind === 'qty' && last.delta === 0) h.shift();
+        return;
+      }
+    }
+    h.unshift({ t: now, kind: kind, id: data.id || null, name: data.name || '', loc: data.loc || '', dir: data.dir || '', delta: data.delta || 0, txt: data.txt || '' });
+    if (h.length > HISTORY_MAX) h.length = HISTORY_MAX;
+  }
+
+  function histText(e) {
+    var locName = { auto: 'Auto', opole: 'Opole' };
+    var d = fmt(Math.abs(e.delta));
+    switch (e.kind) {
+      case 'qty':
+        return e.name + ' — ' + locName[e.loc] + ' <b class="' + (e.delta >= 0 ? 'plus' : 'minus') + '">' +
+          (e.delta >= 0 ? '+' : '−') + d + '</b>';
+      case 'set':
+        return e.name + ' — ' + locName[e.loc] + ' ustawiono na <b>' + fmt(e.delta) + '</b>';
+      case 'transfer':
+        return e.name + ' — przeniesiono <b>' + d + '</b> ' + (e.dir === 'auto>opole' ? 'do Opola' : 'na auto');
+      case 'load':
+        return e.name + ' — załadunek na auto <b class="plus">+' + d + '</b>';
+      case 'add': return 'Dodano „' + e.name + '”';
+      case 'del': return 'Usunięto „' + e.name + '”';
+      case 'reset': return 'Przywrócono dane startowe';
+      case 'import': return 'Zaimportowano dane (' + fmt(e.delta) + ' pozycji)';
+      default: return e.txt || '';
+    }
+  }
+
   // ---------- render ----------
   var listEl = document.getElementById('list');
   var summaryEl = document.getElementById('summary');
   var searchInput = document.getElementById('searchInput');
+  var chipsEl = document.getElementById('catChips');
+
+  function matchesFilters(it, q) {
+    if (q && it.name.toLowerCase().indexOf(q) === -1) return false;
+    if (state.catFilter === '__low__') return isLow(it);
+    if (state.catFilter && it.cat !== state.catFilter) return false;
+    return true;
+  }
+
+  function renderChips() {
+    chipsEl.innerHTML = '';
+    var defs = [{ key: null, label: 'Wszystkie' }];
+    var lc = lowCount();
+    defs.push({ key: '__low__', label: 'Braki' + (lc ? ' · ' + lc : ''), low: true });
+    allCats().forEach(function (c) { defs.push({ key: c, label: c }); });
+    defs.forEach(function (d) {
+      var b = document.createElement('button');
+      b.className = 'chip' + (d.low ? ' low-chip' : '') + (state.catFilter === d.key ? ' active' : '');
+      b.textContent = d.label;
+      b.addEventListener('click', function () {
+        state.catFilter = (state.catFilter === d.key) ? null : d.key;
+        save(); render();
+      });
+      chipsEl.appendChild(b);
+    });
+  }
 
   function render() {
+    renderChips();
     var q = searchInput.value.trim().toLowerCase();
     var tab = state.tab;
     listEl.innerHTML = '';
@@ -492,14 +682,14 @@
     var sumAuto = 0, sumOpole = 0, shown = 0;
     var cats = allCats();
 
+    if (tab === 'load') renderLoadBar();
+
     cats.forEach(function (catName, catIdx) {
-      var items = state.items.filter(function (it) {
-        return it.cat === catName && (!q || it.name.toLowerCase().indexOf(q) !== -1);
-      });
+      var items = state.items.filter(function (it) { return it.cat === catName && matchesFilters(it, q); });
       if (!items.length) return;
       items.sort(function (a, b) { return a.name.localeCompare(b.name, 'pl'); });
 
-      var collapsed = !q && state.collapsed[catName];
+      var collapsed = !q && state.catFilter === null && tab !== 'load' && state.collapsed[catName];
 
       var header = document.createElement('button');
       header.className = 'cat-header' + (collapsed ? ' collapsed' : '');
@@ -522,28 +712,7 @@
         sumOpole += it.opole || 0;
         shown++;
         if (collapsed) return;
-
-        var row = document.createElement('div');
-        row.className = 'item';
-
-        var nameBtn = document.createElement('button');
-        nameBtn.className = 'item-name';
-        nameBtn.textContent = it.name;
-        nameBtn.addEventListener('click', function () { openItemSheet(it.id); });
-        row.appendChild(nameBtn);
-
-        if (tab === 'all') {
-          var badges = document.createElement('button');
-          badges.className = 'item-badges';
-          badges.innerHTML =
-            '<span class="badge-line">Auto <b>' + fmt(it.auto) + '</b> · Opole <b>' + fmt(it.opole) + '</b></span>' +
-            '<span class="badge-total">Σ ' + fmt((it.auto || 0) + (it.opole || 0)) + '</span>';
-          badges.addEventListener('click', function () { openItemSheet(it.id); });
-          row.appendChild(badges);
-        } else {
-          row.appendChild(buildStepper(it, tab));
-        }
-        box.appendChild(row);
+        box.appendChild(tab === 'load' ? buildLoadRow(it) : buildRow(it, tab));
       });
 
       if (!collapsed) listEl.appendChild(box);
@@ -552,15 +721,167 @@
     if (!shown) {
       var note = document.createElement('div');
       note.className = 'empty-note';
-      note.textContent = q ? 'Brak wyników dla „' + searchInput.value.trim() + '”' : 'Magazyn jest pusty — dodaj pierwszy materiał.';
+      note.textContent = q ? 'Brak wyników dla „' + searchInput.value.trim() + '”'
+        : (state.catFilter === '__low__' ? 'Nic nie brakuje — wszystkie stany powyżej minimum. 💪'
+          : 'Magazyn jest pusty — dodaj pierwszy materiał.');
       listEl.appendChild(note);
     }
 
-    if (tab === 'auto') summaryEl.innerHTML = 'Na aucie łącznie: <b>' + fmt(sumAuto) + '</b> szt.';
-    else if (tab === 'opole') summaryEl.innerHTML = 'W Opolu łącznie: <b>' + fmt(sumOpole) + '</b> szt.';
-    else summaryEl.innerHTML = shown + ' pozycji · Auto <b>' + fmt(sumAuto) + '</b> · Opole <b>' + fmt(sumOpole) + '</b> · Σ <b>' + fmt(sumAuto + sumOpole) + '</b>';
+    var lowAll = lowCount();
+    var lowTxt = lowAll ? ' · <span class="warn">Braki ' + lowAll + '</span>' : '';
+    if (tab === 'auto') summaryEl.innerHTML = 'Na aucie łącznie: <b>' + fmt(sumAuto) + '</b>' + lowTxt;
+    else if (tab === 'opole') summaryEl.innerHTML = 'W Opolu łącznie: <b>' + fmt(sumOpole) + '</b>' + lowTxt;
+    else if (tab === 'load') {
+      var p = plannedInfo();
+      summaryEl.innerHTML = p.count
+        ? 'Do załadunku: <b>' + p.count + '</b> pozycji · razem <b>' + fmt(p.qty) + '</b>'
+        : 'Ustaw ilości do zabrania z Opola, potem odhaczaj ✓ przy załadunku.';
+    }
+    else summaryEl.innerHTML = shown + ' pozycji · Auto <b>' + fmt(sumAuto) + '</b> · Opole <b>' + fmt(sumOpole) + '</b>' + lowTxt;
   }
 
+  function buildRow(it, tab) {
+    var row = document.createElement('div');
+    row.className = 'item' + (isLow(it) ? ' low' : '');
+
+    var nameBtn = document.createElement('button');
+    nameBtn.className = 'item-name';
+    nameBtn.textContent = it.name;
+    nameBtn.addEventListener('click', function () { openItemSheet(it.id); });
+    row.appendChild(nameBtn);
+
+    if (tab === 'all') {
+      var badges = document.createElement('button');
+      badges.className = 'item-badges';
+      var lowHtml = isLow(it)
+        ? '<span class="badge-low">brakuje ' + fmt(it.min - totalOf(it)) + '</span>'
+        : '<span class="badge-total">Σ ' + fmt(totalOf(it)) + unitSuffix(it) + '</span>';
+      badges.innerHTML =
+        '<span class="badge-line">Auto <b>' + fmt(it.auto) + '</b> · Opole <b>' + fmt(it.opole) + '</b></span>' + lowHtml;
+      badges.addEventListener('click', function () { openItemSheet(it.id); });
+      row.appendChild(badges);
+    } else {
+      row.appendChild(buildStepper(it, tab));
+    }
+    return row;
+  }
+
+  // ---------- widok „Załadunek” ----------
+  function plannedInfo() {
+    var count = 0, qty = 0;
+    Object.keys(state.loadPlan).forEach(function (id) {
+      var v = state.loadPlan[id];
+      if (v > 0 && findItem(id)) { count++; qty += v; }
+    });
+    return { count: count, qty: qty };
+  }
+
+  function renderLoadBar() {
+    var bar = document.createElement('div');
+    bar.className = 'load-bar';
+    var p = plannedInfo();
+    bar.innerHTML = '<span class="lb-txt">Plan załadunku: <b>' + p.count + '</b> poz.</span>';
+    var clear = document.createElement('button');
+    clear.textContent = 'Wyczyść plan';
+    clear.disabled = !p.count;
+    clear.style.opacity = p.count ? '' : '.45';
+    clear.addEventListener('click', function () {
+      if (!p.count || !confirm('Wyczyścić cały plan załadunku?')) return;
+      state.loadPlan = {};
+      save(); render();
+    });
+    bar.appendChild(clear);
+    listEl.appendChild(bar);
+  }
+
+  function buildLoadRow(it) {
+    var plan = state.loadPlan[it.id] || 0;
+    var row = document.createElement('div');
+    row.className = 'item' + (plan > 0 ? ' planned' : '');
+
+    var nameBtn = document.createElement('button');
+    nameBtn.className = 'item-name';
+    nameBtn.textContent = it.name;
+    var sub = document.createElement('span');
+    sub.className = 'item-sub';
+    sub.textContent = 'Opole ' + fmt(it.opole) + ' · Auto ' + fmt(it.auto) + unitSuffix(it);
+    nameBtn.appendChild(sub);
+    nameBtn.addEventListener('click', function () { openItemSheet(it.id); });
+    row.appendChild(nameBtn);
+
+    var wrap = document.createElement('div');
+    wrap.className = 'stepper small';
+
+    var minus = document.createElement('button');
+    minus.className = 'step-btn';
+    minus.textContent = '−';
+    attachHold(minus, function () { changePlan(it.id, -1); });
+
+    var val = document.createElement('button');
+    val.className = 'step-val' + (plan ? '' : ' zero');
+    val.textContent = fmt(plan);
+    val.addEventListener('click', function () { promptPlan(it.id); });
+
+    var plus = document.createElement('button');
+    plus.className = 'step-btn';
+    plus.textContent = '+';
+    attachHold(plus, function () { changePlan(it.id, 1); });
+
+    wrap.appendChild(minus); wrap.appendChild(val); wrap.appendChild(plus);
+    row.appendChild(wrap);
+
+    if (plan > 0) {
+      var check = document.createElement('button');
+      check.className = 'check-btn';
+      check.textContent = '✓';
+      check.setAttribute('aria-label', 'Załaduj');
+      check.addEventListener('click', function () { executeLoad(it.id); });
+      row.appendChild(check);
+    }
+    return row;
+  }
+
+  function changePlan(id, delta) {
+    var v = (state.loadPlan[id] || 0) + delta;
+    if (v <= 0) delete state.loadPlan[id];
+    else state.loadPlan[id] = Math.round(v * 100) / 100;
+    save(); render();
+  }
+
+  function promptPlan(id) {
+    var it = findItem(id);
+    if (!it) return;
+    var input = prompt(it.name + ' — ile zabrać z Opola?', String(state.loadPlan[id] || 0));
+    if (input === null) return;
+    var v = parseFloat(input.replace(',', '.'));
+    if (isNaN(v) || v < 0) return;
+    if (v === 0) delete state.loadPlan[id];
+    else state.loadPlan[id] = Math.round(v * 100) / 100;
+    save(); render();
+  }
+
+  function executeLoad(id) {
+    var it = findItem(id);
+    var plan = state.loadPlan[id] || 0;
+    if (!it || plan <= 0) return;
+    var avail = it.opole || 0;
+    if (avail <= 0) {
+      showToast('Brak „' + it.name + '” w Opolu — nie przeniesiono', false);
+      return;
+    }
+    snapshot('Załadunek: ' + it.name);
+    var moved = Math.min(plan, avail);
+    it.opole = Math.round((it.opole - moved) * 100) / 100;
+    it.auto = Math.round(((it.auto || 0) + moved) * 100) / 100;
+    delete state.loadPlan[id];
+    logEvent('load', { id: it.id, name: it.name, delta: moved });
+    save(); render();
+    showToast(moved < plan
+      ? 'Załadowano tylko ' + fmt(moved) + ' — tyle było w Opolu'
+      : 'Załadowano: ' + it.name + ' (' + fmt(moved) + ')', true);
+  }
+
+  // ---------- steppery ----------
   function buildStepper(it, loc) {
     var wrap = document.createElement('div');
     wrap.className = 'stepper';
@@ -615,7 +936,11 @@
 
   // ---------- zmiany ilości ----------
   function snapshot(msg) {
-    undoSnapshot = { items: JSON.parse(JSON.stringify(state.items)), msg: msg };
+    undoSnapshot = {
+      items: JSON.parse(JSON.stringify(state.items)),
+      loadPlan: JSON.parse(JSON.stringify(state.loadPlan)),
+      msg: msg
+    };
   }
 
   function changeQty(id, loc, delta) {
@@ -624,7 +949,9 @@
     var v = (it[loc] || 0) + delta;
     if (v < 0) v = 0;
     if (v === it[loc]) return;
+    var real = v - (it[loc] || 0);
     it[loc] = Math.round(v * 100) / 100;
+    logEvent('qty', { id: it.id, name: it.name, loc: loc, delta: real });
     save(); render(); refreshItemSheet();
   }
 
@@ -636,7 +963,30 @@
     if (input === null) return;
     var v = parseFloat(input.replace(',', '.'));
     if (isNaN(v) || v < 0) return;
-    it[loc] = Math.round(v * 100) / 100;
+    v = Math.round(v * 100) / 100;
+    if (v === it[loc]) return;
+    it[loc] = v;
+    logEvent('set', { id: it.id, name: it.name, loc: loc, delta: v });
+    save(); render(); refreshItemSheet();
+  }
+
+  function changeMin(id, delta) {
+    var it = findItem(id);
+    if (!it) return;
+    var v = (it.min || 0) + delta;
+    if (v < 0) v = 0;
+    it.min = Math.round(v * 100) / 100;
+    save(); render(); refreshItemSheet();
+  }
+
+  function promptMin(id) {
+    var it = findItem(id);
+    if (!it) return;
+    var input = prompt(it.name + ' — stan minimalny (0 = bez alertu):', String(it.min || 0));
+    if (input === null) return;
+    var v = parseFloat(input.replace(',', '.'));
+    if (isNaN(v) || v < 0) return;
+    it.min = Math.round(v * 100) / 100;
     save(); render(); refreshItemSheet();
   }
 
@@ -645,6 +995,7 @@
   var itemSheet = document.getElementById('itemSheet');
   var addSheet = document.getElementById('addSheet');
   var menuSheet = document.getElementById('menuSheet');
+  var histSheet = document.getElementById('histSheet');
 
   function openSheet(sheet) {
     closeSheets();
@@ -654,7 +1005,7 @@
   function closeSheets() {
     commitItemEdits();
     overlay.classList.remove('open');
-    [itemSheet, addSheet, menuSheet].forEach(function (s) { s.classList.remove('open'); });
+    [itemSheet, addSheet, menuSheet, histSheet].forEach(function (s) { s.classList.remove('open'); });
     currentItemId = null;
   }
   overlay.addEventListener('click', closeSheets);
@@ -669,6 +1020,18 @@
     if (value) sel.value = value;
   }
 
+  function fillUnitSelect(sel, value) {
+    sel.innerHTML = '';
+    var units = UNITS.slice();
+    if (value && units.indexOf(value) === -1) units.push(value);
+    units.forEach(function (u) {
+      var o = document.createElement('option');
+      o.value = u; o.textContent = u;
+      sel.appendChild(o);
+    });
+    sel.value = value || 'szt.';
+  }
+
   function openItemSheet(id) {
     var it = findItem(id);
     if (!it) return;
@@ -676,6 +1039,7 @@
     currentItemId = id;
     document.getElementById('editName').value = it.name;
     fillCatSelect(document.getElementById('editCat'), it.cat);
+    fillUnitSelect(document.getElementById('editUnit'), it.unit);
     refreshItemSheet();
   }
 
@@ -684,14 +1048,19 @@
     var it = findItem(currentItemId);
     if (!it) return;
     document.getElementById('sheetTitle').textContent = it.name;
-    document.getElementById('sheetSub').textContent = it.cat;
+    document.getElementById('sheetSub').textContent = it.cat + (it.unit !== 'szt.' ? ' · ' + it.unit : '');
     var av = document.getElementById('sheetAutoVal');
     var ov = document.getElementById('sheetOpoleVal');
+    var mv = document.getElementById('sheetMinVal');
     av.textContent = fmt(it.auto);
     ov.textContent = fmt(it.opole);
+    mv.textContent = fmt(it.min || 0);
     av.className = 'step-val' + (it.auto ? '' : ' zero');
     ov.className = 'step-val' + (it.opole ? '' : ' zero');
-    document.getElementById('sheetTotal').textContent = fmt((it.auto || 0) + (it.opole || 0));
+    mv.className = 'step-val' + (it.min ? '' : ' zero');
+    var tot = document.getElementById('sheetTotal');
+    tot.textContent = fmt(totalOf(it)) + unitSuffix(it) + (isLow(it) ? ' — poniżej minimum!' : '');
+    tot.className = isLow(it) ? 'low' : '';
   }
 
   function commitItemEdits() {
@@ -700,9 +1069,11 @@
     if (!it) return;
     var name = document.getElementById('editName').value.trim();
     var cat = document.getElementById('editCat').value;
-    if (name && (name !== it.name || cat !== it.cat)) {
+    var unit = document.getElementById('editUnit').value;
+    if (name && (name !== it.name || cat !== it.cat || unit !== it.unit)) {
       it.name = name;
       it.cat = cat;
+      it.unit = unit;
       save(); render();
     }
   }
@@ -712,8 +1083,14 @@
       changeQty(currentItemId, btn.dataset.loc, parseInt(btn.dataset.d, 10));
     });
   });
+  itemSheet.querySelectorAll('.step-btn[data-min]').forEach(function (btn) {
+    attachHold(btn, function () {
+      changeMin(currentItemId, parseInt(btn.dataset.d, 10));
+    });
+  });
   document.getElementById('sheetAutoVal').addEventListener('click', function () { promptQty(currentItemId, 'auto'); });
   document.getElementById('sheetOpoleVal').addEventListener('click', function () { promptQty(currentItemId, 'opole'); });
+  document.getElementById('sheetMinVal').addEventListener('click', function () { promptMin(currentItemId); });
 
   document.getElementById('toOpole').addEventListener('click', function () { transfer('auto', 'opole'); });
   document.getElementById('toAuto').addEventListener('click', function () { transfer('opole', 'auto'); });
@@ -726,6 +1103,7 @@
     }
     it[from] = Math.round((it[from] - 1) * 100) / 100;
     it[to] = Math.round(((it[to] || 0) + 1) * 100) / 100;
+    logEvent('transfer', { id: it.id, name: it.name, dir: from === 'auto' ? 'auto>opole' : 'opole>auto', delta: 1 });
     save(); render(); refreshItemSheet();
   }
 
@@ -737,6 +1115,8 @@
     if (!confirm('Usunąć „' + it.name + '” z magazynu?')) return;
     snapshot('Usunięto „' + it.name + '”');
     state.items = state.items.filter(function (x) { return x.id !== currentItemId; });
+    delete state.loadPlan[it.id];
+    logEvent('del', { id: it.id, name: it.name });
     currentItemId = null;
     save(); render(); closeSheets();
     showToast(undoSnapshot.msg, true);
@@ -748,7 +1128,9 @@
     document.getElementById('newName').value = '';
     document.getElementById('newAutoVal').textContent = '0';
     document.getElementById('newOpoleVal').textContent = '0';
-    fillCatSelect(document.getElementById('newCat'));
+    fillCatSelect(document.getElementById('newCat'),
+      state.catFilter && state.catFilter !== '__low__' ? state.catFilter : null);
+    fillUnitSelect(document.getElementById('newUnit'));
     openSheet(addSheet);
     setTimeout(function () { document.getElementById('newName').focus(); }, 250);
   });
@@ -766,13 +1148,17 @@
   document.getElementById('saveAddBtn').addEventListener('click', function () {
     var name = document.getElementById('newName').value.trim();
     if (!name) { document.getElementById('newName').focus(); return; }
-    state.items.push({
+    var item = {
       id: 'u' + Date.now(),
       name: name,
       cat: document.getElementById('newCat').value,
+      unit: document.getElementById('newUnit').value,
+      min: 0,
       auto: newItemQty.auto,
       opole: newItemQty.opole
-    });
+    };
+    state.items.push(item);
+    logEvent('add', { id: item.id, name: item.name });
     save(); render(); closeSheets();
     showToast('Dodano „' + name + '”', false);
   });
@@ -780,14 +1166,50 @@
   // ---------- menu ----------
   document.getElementById('menuBtn').addEventListener('click', function () {
     var d = state.updated ? new Date(state.updated) : null;
+    var lc = lowCount();
     document.getElementById('menuInfo').textContent =
-      state.items.length + ' pozycji' +
+      state.items.length + ' pozycji' + (lc ? ' · braki: ' + lc : '') +
       (d ? ' · ostatnia zmiana: ' + d.toLocaleString('pl-PL') : '');
     openSheet(menuSheet);
   });
 
+  // ---------- historia (widok) ----------
+  function fmtHistTime(t) {
+    var d = new Date(t);
+    var now = new Date();
+    var sameDay = d.toDateString() === now.toDateString();
+    var time = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    if (sameDay) return 'dziś ' + time;
+    return d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit' }) + ' ' + time;
+  }
+
+  function openHistSheet() {
+    var box = document.getElementById('histList');
+    box.innerHTML = '';
+    var h = state.history;
+    document.getElementById('histInfo').textContent = h.length
+      ? 'Ostatnie operacje (' + h.length + ')'
+      : 'Brak zapisanych operacji';
+    h.slice(0, 150).forEach(function (e) {
+      var row = document.createElement('div');
+      row.className = 'hist-item';
+      row.innerHTML = '<span class="hist-time">' + fmtHistTime(e.t) + '</span><span class="hist-txt">' + histText(e) + '</span>';
+      box.appendChild(row);
+    });
+    openSheet(histSheet);
+  }
+
+  document.getElementById('historyBtn').addEventListener('click', openHistSheet);
+  document.getElementById('closeHistBtn').addEventListener('click', closeSheets);
+  document.getElementById('clearHistBtn').addEventListener('click', function () {
+    if (!state.history.length || !confirm('Wyczyścić całą historię zmian?')) return;
+    state.history = [];
+    save(); openHistSheet();
+  });
+
+  // ---------- eksport / import / reset ----------
   document.getElementById('exportBtn').addEventListener('click', function () {
-    var data = JSON.stringify({ app: 'dalpack-magazyn', exported: new Date().toISOString(), items: state.items }, null, 2);
+    var data = JSON.stringify({ app: 'dalpack-magazyn', exported: new Date().toISOString(), items: state.items, history: state.history }, null, 2);
     var blob = new Blob([data], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -809,18 +1231,12 @@
         var data = JSON.parse(reader.result);
         var items = Array.isArray(data) ? data : data.items;
         if (!Array.isArray(items)) throw new Error('bad format');
-        var cleaned = items.filter(function (x) { return x && typeof x.name === 'string'; }).map(function (x, i) {
-          return {
-            id: x.id || 'i' + Date.now() + '_' + i,
-            name: x.name,
-            cat: typeof x.cat === 'string' ? x.cat : 'Mocowanie',
-            auto: typeof x.auto === 'number' ? x.auto : 0,
-            opole: typeof x.opole === 'number' ? x.opole : 0
-          };
-        });
+        var cleaned = items.filter(function (x) { return x && typeof x.name === 'string'; }).map(normalizeItem);
         if (!cleaned.length) throw new Error('empty');
         snapshot('Zaimportowano dane');
         state.items = cleaned;
+        state.loadPlan = {};
+        logEvent('import', { delta: cleaned.length });
         save(); render(); closeSheets();
         showToast('Zaimportowano ' + cleaned.length + ' pozycji', true);
       } catch (e) {
@@ -834,6 +1250,8 @@
     if (!confirm('Przywrócić listę startową? Wszystkie ilości zostaną wyzerowane.')) return;
     snapshot('Przywrócono dane startowe');
     state.items = seedItems();
+    state.loadPlan = {};
+    logEvent('reset', {});
     save(); render(); closeSheets();
     showToast('Przywrócono dane startowe', true);
   });
@@ -850,6 +1268,7 @@
   document.getElementById('undoBtn').addEventListener('click', function () {
     if (!undoSnapshot) return;
     state.items = undoSnapshot.items;
+    state.loadPlan = undoSnapshot.loadPlan || {};
     undoSnapshot = null;
     save(); render();
     toastEl.classList.remove('show');
