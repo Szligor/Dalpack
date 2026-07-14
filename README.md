@@ -17,16 +17,23 @@ Dane zapisują się w pamięci przeglądarki telefonu (localStorage). Żeby prze
 
 ## Jak otworzyć na telefonie
 
-1. Włącz **GitHub Pages** dla tego repozytorium: *Settings → Pages → Source: GitHub Actions* (workflow `deploy-pages.yml` zrobi resztę przy następnym pushu; można go też uruchomić ręcznie w zakładce *Actions*).
-2. Otwórz na telefonie adres: `https://szligor.github.io/Dalpack/`
-3. Dodaj do ekranu głównego:
-   - **Android (Chrome)**: menu ⋮ → „Dodaj do ekranu głównego"
-   - **iPhone (Safari)**: przycisk Udostępnij → „Do ekranu początkowego"
+Aplikacja jest opublikowana na GitHub Pages: **https://szligor.github.io/Dalpack/**
+
+Dodaj ją do ekranu głównego:
+- **Android (Chrome)**: menu ⋮ → „Dodaj do ekranu głównego"
+- **iPhone (Safari)**: przycisk Udostępnij → „Do ekranu początkowego"
 
 Od tej pory aplikacja otwiera się jak zwykła apka, na pełnym ekranie i offline.
+
+## Publikowanie zmian
+
+Strona jest serwowana z gałęzi `gh-pages`. Po zmianach w kodzie zaktualizuj ją tak:
+
+```bash
+git push origin <twoja-gałąź>:gh-pages
+```
 
 ## Struktura
 
 - `index.html` — cała aplikacja (HTML + CSS + JS, bez zależności)
 - `manifest.webmanifest`, `sw.js`, `icons/` — instalacja na telefonie i tryb offline
-- `.github/workflows/deploy-pages.yml` — automatyczne publikowanie na GitHub Pages
