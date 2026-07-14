@@ -1,0 +1,881 @@
+<style id="brand-fonts">/*__FONTS__*/</style>
+<style>
+  /* Identyfikacja DAL-PACK: zieleń #0C3A30, złoto #C6863B, krem #F3F1EA,
+     nagłówki Archivo (wersaliki), tekst IBM Plex Sans */
+  :root {
+    --brand: #0C3A30;
+    --brand-deep: #082A22;
+    --gold: #C6863B;
+    --gold-hover: #D89A4E;
+    --gold-soft: #E4B675;
+    --bg: #F3F1EA;
+    --surface: #FBFAF5;
+    --surface2: #EAE7DD;
+    --text: #14211B;
+    --text2: #5A665E;
+    --border: rgba(20,33,27,0.14);
+    --gold-ink: #B0752A;
+    --danger: #B04A3B;
+    --shadow: 0 1px 2px rgba(12,58,48,.07), 0 10px 30px -18px rgba(12,58,48,.35);
+    --font-head: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #082A22;
+      --surface: #0F382E;
+      --surface2: #17493C;
+      --text: #F3F1EA;
+      --text2: #9DB4A9;
+      --border: rgba(255,255,255,0.14);
+      --gold-ink: #E4B675;
+      --danger: #D0705F;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -18px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F3F1EA; --surface: #FBFAF5; --surface2: #EAE7DD;
+    --text: #14211B; --text2: #5A665E; --border: rgba(20,33,27,0.14);
+    --gold-ink: #B0752A; --danger: #B04A3B;
+    --shadow: 0 1px 2px rgba(12,58,48,.07), 0 10px 30px -18px rgba(12,58,48,.35);
+  }
+  :root[data-theme="dark"] {
+    --bg: #082A22; --surface: #0F382E; --surface2: #17493C;
+    --text: #F3F1EA; --text2: #9DB4A9; --border: rgba(255,255,255,0.14);
+    --gold-ink: #E4B675; --danger: #D0705F;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px -18px rgba(0,0,0,.6);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.45;
+    padding-bottom: 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--gold); color: var(--brand); }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select { font: inherit; color: var(--text); }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* ---- nagłówek: zawsze firmowa zieleń, jak hero na stronie ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    background: radial-gradient(160% 170% at 4% 0%, #17825F 0%, #0C3A30 62%);
+    color: #fff;
+    padding: env(safe-area-inset-top) 14px 12px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .topbar-row { display: flex; align-items: center; gap: 10px; padding-top: 12px; }
+  .wordmark { flex: 1; min-width: 0; }
+  .wordmark .brand-name {
+    font: 800 21px/1 var(--font-head);
+    letter-spacing: .04em; text-transform: uppercase; color: #fff;
+  }
+  .eyebrow { display: flex; align-items: center; gap: 9px; margin-top: 6px; }
+  .crates { position: relative; width: 34px; height: 8px; flex: none; }
+  .crates i { position: absolute; display: block; background: var(--gold); }
+  .crates .line { left: 0; right: 0; bottom: 0; height: 2px; }
+  .crates .c1 { bottom: 0; left: 2px;  width: 6px; height: 6px; }
+  .crates .c2 { bottom: 0; left: 14px; width: 6px; height: 6px; }
+  .crates .c3 { bottom: 0; left: 26px; width: 6px; height: 6px; }
+  .eyebrow span {
+    font: 600 10px/1.2 var(--font-head);
+    letter-spacing: .24em; text-transform: uppercase; color: var(--gold-soft);
+  }
+  .icon-btn {
+    width: 44px; height: 44px; border-radius: 7px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: 1px solid rgba(255,255,255,0.32);
+    font-size: 1.25rem; color: #fff;
+  }
+  .search-row { margin-top: 14px; }
+  .search-row input {
+    width: 100%; background: transparent; border: 0;
+    border-bottom: 1.5px solid rgba(255,255,255,0.28);
+    color: #fff; padding: 10px 2px; outline: none;
+    font: 400 16px var(--font-body); border-radius: 0;
+  }
+  .search-row input::placeholder { color: rgba(255,255,255,0.45); }
+  .search-row input:focus { border-bottom-color: var(--gold); }
+  .search-row input:focus-visible { outline: none; }
+  .tabs { display: flex; gap: 8px; margin-top: 14px; }
+  .tab {
+    flex: 1; height: 42px; border-radius: 7px;
+    font: 700 12px/1 var(--font-head);
+    letter-spacing: .1em; text-transform: uppercase;
+    background: transparent; border: 1.5px solid rgba(255,255,255,0.34);
+    color: rgba(255,255,255,0.88); white-space: nowrap;
+  }
+  .tab.active { background: var(--gold); border-color: var(--gold); color: var(--brand); }
+  .summary {
+    margin-top: 10px; text-align: center;
+    font: 400 12.5px/1.4 var(--font-body); color: rgba(255,255,255,0.68);
+  }
+  .summary b { color: var(--gold-soft); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ---- lista ---- */
+  .list { padding: 10px 14px 0; max-width: 640px; margin: 0 auto; }
+  .cat-header {
+    display: flex; align-items: baseline; gap: 10px; width: 100%;
+    padding: 18px 4px 8px; text-align: left;
+  }
+  .cat-num { font: 800 13px/1 var(--font-head); color: var(--gold-ink); letter-spacing: .08em; }
+  .cat-name {
+    font: 700 15px/1.2 var(--font-head);
+    text-transform: uppercase; letter-spacing: .03em; color: var(--text);
+  }
+  .cat-count { font: 400 13px/1 var(--font-body); color: var(--text2); }
+  .cat-chevron { margin-left: auto; color: var(--text2); transition: transform .15s; font-size: .8rem; }
+  .cat-header.collapsed .cat-chevron { transform: rotate(-90deg); }
+  .cat-items {
+    border-radius: 10px; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-bottom: 1px solid var(--border); min-height: 60px;
+  }
+  .item:last-child { border-bottom: none; }
+  .item-name {
+    flex: 1; text-align: left; padding: 6px 0; min-width: 0;
+    font: 400 15.5px/1.35 var(--font-body); color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .item-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex: none; }
+  .badge-line {
+    font: 600 10.5px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text2); white-space: nowrap;
+  }
+  .badge-line b {
+    font: 700 14px/1 var(--font-head); color: var(--text);
+    letter-spacing: 0; font-variant-numeric: tabular-nums;
+  }
+  .badge-total {
+    font: 600 11px/1 var(--font-body); background: var(--surface2);
+    border-radius: 100px; padding: 4px 10px; color: var(--text2);
+    font-variant-numeric: tabular-nums;
+  }
+  .stepper { display: flex; align-items: center; gap: 3px; flex: none; }
+  .step-btn {
+    width: 46px; height: 46px; border-radius: 7px;
+    font: 600 1.4rem/1 var(--font-head);
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; touch-action: manipulation; color: var(--text);
+  }
+  .step-btn:active { background: var(--gold); border-color: var(--gold); color: var(--brand); }
+  .step-val {
+    min-width: 54px; text-align: center; padding: 8px 2px;
+    font: 800 19px/1 var(--font-head); color: var(--text);
+    font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+  }
+  .step-val.zero { color: var(--text2); font-weight: 500; }
+  .empty-note { text-align: center; color: var(--text2); padding: 44px 20px; }
+
+  .fab {
+    position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 25;
+    height: 54px; padding: 0 24px; border-radius: 7px;
+    background: var(--gold); color: var(--brand);
+    font: 700 13px/1 var(--font-head); letter-spacing: .1em; text-transform: uppercase;
+    box-shadow: 0 14px 30px -12px rgba(12,58,48,.55);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .fab:active { background: var(--gold-hover); }
+
+  /* ---- arkusze ---- */
+  .overlay { position: fixed; inset: 0; background: rgba(6,32,26,.55); z-index: 40; display: none; }
+  .overlay.open { display: block; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    background: var(--surface); color: var(--text);
+    border-radius: 14px 14px 0 0; border-top: 3px solid var(--gold);
+    padding: 6px 18px calc(20px + env(safe-area-inset-bottom));
+    max-width: 640px; margin: 0 auto;
+    max-height: 88vh; overflow-y: auto;
+    transform: translateY(105%); transition: transform .2s ease-out;
+    box-shadow: 0 -8px 40px rgba(6,32,26,.4);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sheet, .cat-chevron { transition: none; }
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-grip { width: 44px; height: 4px; border-radius: 2px; background: var(--border); margin: 8px auto 16px; }
+  .sheet h2 {
+    margin: 0 0 4px; font: 700 19px/1.2 var(--font-head);
+    text-transform: uppercase; letter-spacing: .01em; overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+  .sheet .sub {
+    font: 600 10.5px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase;
+    color: var(--gold-ink); margin-bottom: 18px;
+  }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; margin-bottom: 6px;
+    font: 600 11px/1 var(--font-body); letter-spacing: .14em;
+    text-transform: uppercase; color: var(--text2);
+  }
+  .field input, .field select {
+    width: 100%; height: 46px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface2); padding: 0 12px; outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--gold); }
+  .loc-block {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
+  }
+  .loc-block .loc-name {
+    font: 600 11px/1.4 var(--font-body); letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text2);
+  }
+  .transfer-row { display: flex; gap: 10px; margin: 4px 0 14px; }
+  .transfer-btn {
+    flex: 1; height: 44px; border-radius: 7px; border: 1.5px dashed var(--border);
+    background: none; color: var(--gold-ink);
+    font: 700 11px/1.2 var(--font-head); letter-spacing: .08em; text-transform: uppercase;
+  }
+  .transfer-btn:active { border-color: var(--gold); }
+  .sheet-total {
+    text-align: center; margin-bottom: 16px;
+    font: 600 11px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase;
+    color: var(--text2);
+  }
+  .sheet-total b {
+    display: block; margin-top: 6px;
+    font: 800 26px/1 var(--font-head); color: var(--gold-ink);
+    letter-spacing: -.01em; font-variant-numeric: tabular-nums;
+  }
+  .btn-row { display: flex; gap: 10px; margin-top: 8px; }
+  .btn {
+    flex: 1; height: 50px; border-radius: 7px;
+    font: 700 13px/1 var(--font-head); letter-spacing: .1em; text-transform: uppercase;
+  }
+  .btn.primary { background: var(--gold); color: var(--brand); }
+  .btn.primary:active { background: var(--gold-hover); }
+  .btn.ghost { background: none; border: 1.5px solid var(--border); color: var(--text); }
+  .btn.danger-ghost { background: none; border: 1.5px solid var(--danger); color: var(--danger); flex: 0 0 auto; padding: 0 18px; }
+
+  .menu-item {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    padding: 16px 4px; text-align: left;
+    font: 500 15px/1.3 var(--font-body); color: var(--text);
+    border-bottom: 1px solid var(--border);
+  }
+  .menu-item:last-of-type { border-bottom: none; }
+  .menu-item .mi-icon { font-size: 1.15rem; width: 28px; text-align: center; }
+  .menu-item.danger { color: var(--danger); }
+
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
+    bottom: calc(88px + env(safe-area-inset-bottom)); z-index: 60;
+    background: #14211B; color: #F3F1EA;
+    border-radius: 7px; padding: 12px 16px; font-size: .9rem;
+    display: flex; align-items: center; gap: 16px;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+    max-width: calc(100vw - 32px); box-shadow: var(--shadow);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .toast button {
+    color: var(--gold-soft);
+    font: 700 12px/1 var(--font-head); letter-spacing: .1em; text-transform: uppercase;
+    flex: none;
+  }
+</style>
+
+<header class="topbar">
+  <div class="topbar-row">
+    <div class="wordmark">
+      <div class="brand-name">Dal-Pack</div>
+      <div class="eyebrow">
+        <div class="crates" aria-hidden="true"><i class="line"></i><i class="c1"></i><i class="c2"></i><i class="c3"></i></div>
+        <span>Magazyn materiałów</span>
+      </div>
+    </div>
+    <button class="icon-btn" id="menuBtn" aria-label="Menu">⋮</button>
+  </div>
+  <div class="search-row">
+    <input type="search" id="searchInput" placeholder="Szukaj materiału…" autocomplete="off">
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="all">Wszystko</button>
+    <button class="tab" data-tab="auto">Auto</button>
+    <button class="tab" data-tab="opole">Opole</button>
+  </div>
+  <div class="summary" id="summary"></div>
+</header>
+
+<main class="list" id="list"></main>
+
+<button class="fab" id="addBtn">＋ Dodaj</button>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="sheet" id="itemSheet">
+  <div class="sheet-grip"></div>
+  <h2 id="sheetTitle"></h2>
+  <div class="sub" id="sheetSub"></div>
+  <div class="loc-block">
+    <span class="loc-name">Na aucie</span>
+    <div class="stepper">
+      <button class="step-btn" data-loc="auto" data-d="-1">−</button>
+      <button class="step-val" id="sheetAutoVal"></button>
+      <button class="step-btn" data-loc="auto" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="transfer-row">
+    <button class="transfer-btn" id="toOpole">⬇ Przenieś 1 do Opola</button>
+    <button class="transfer-btn" id="toAuto">⬆ Przenieś 1 na auto</button>
+  </div>
+  <div class="loc-block">
+    <span class="loc-name">Magazyn Opole</span>
+    <div class="stepper">
+      <button class="step-btn" data-loc="opole" data-d="-1">−</button>
+      <button class="step-val" id="sheetOpoleVal"></button>
+      <button class="step-btn" data-loc="opole" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="sheet-total">Razem <b id="sheetTotal"></b></div>
+  <div class="field">
+    <label for="editName">Nazwa</label>
+    <input type="text" id="editName">
+  </div>
+  <div class="field">
+    <label for="editCat">Kategoria</label>
+    <select id="editCat"></select>
+  </div>
+  <div class="btn-row">
+    <button class="btn danger-ghost" id="deleteBtn" aria-label="Usuń">🗑</button>
+    <button class="btn primary" id="closeItemBtn">Gotowe</button>
+  </div>
+</div>
+
+<div class="sheet" id="addSheet">
+  <div class="sheet-grip"></div>
+  <h2>Nowy materiał</h2>
+  <div class="sub">Dodaj pozycję do magazynu</div>
+  <div class="field">
+    <label for="newName">Nazwa</label>
+    <input type="text" id="newName" placeholder="np. Wkręty 160 mm">
+  </div>
+  <div class="field">
+    <label for="newCat">Kategoria</label>
+    <select id="newCat"></select>
+  </div>
+  <div class="loc-block">
+    <span class="loc-name">Na aucie</span>
+    <div class="stepper">
+      <button class="step-btn" data-new="auto" data-d="-1">−</button>
+      <button class="step-val" id="newAutoVal">0</button>
+      <button class="step-btn" data-new="auto" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="loc-block">
+    <span class="loc-name">Magazyn Opole</span>
+    <div class="stepper">
+      <button class="step-btn" data-new="opole" data-d="-1">−</button>
+      <button class="step-val" id="newOpoleVal">0</button>
+      <button class="step-btn" data-new="opole" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn ghost" id="cancelAddBtn">Anuluj</button>
+    <button class="btn primary" id="saveAddBtn">Dodaj</button>
+  </div>
+</div>
+
+<div class="sheet" id="menuSheet">
+  <div class="sheet-grip"></div>
+  <h2>Ustawienia</h2>
+  <div class="sub" id="menuInfo"></div>
+  <button class="menu-item" id="exportBtn"><span class="mi-icon">💾</span> Eksportuj dane (kopia zapasowa)</button>
+  <button class="menu-item" id="importBtn"><span class="mi-icon">📥</span> Importuj dane z pliku</button>
+  <button class="menu-item danger" id="resetBtn"><span class="mi-icon">♻️</span> Przywróć dane startowe</button>
+  <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+  <button id="undoBtn">Cofnij</button>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'dalpack-magazyn-v1';
+
+  var CATEGORIES = ['Mocowanie', 'Pakowanie', 'Folia', 'Pasy', 'Czujniki'];
+
+  // Stan startowy — odwzorowanie bazy Notion „Magazyn materiałów”
+  var SEED = [
+    ['Gwoździe — małe', 'Mocowanie'], ['Gwoździe — średnie', 'Mocowanie'], ['Gwoździe — duże', 'Mocowanie'],
+    ['Haki', 'Mocowanie'], ['Metalowe uszy', 'Mocowanie'],
+    ['Okucia — lewe', 'Mocowanie'], ['Okucia — prawe', 'Mocowanie'], ['Okucia — podłużne', 'Mocowanie'],
+    ['Podkładki gumowe', 'Mocowanie'],
+    ['Podkładki metalowe — małe', 'Mocowanie'], ['Podkładki metalowe — średnie', 'Mocowanie'], ['Podkładki metalowe — duże', 'Mocowanie'],
+    ['Wkręty 120 mm', 'Mocowanie'], ['Wkręty 140 mm', 'Mocowanie'], ['Wkręty 180 mm', 'Mocowanie'],
+    ['Wkręty 220 mm', 'Mocowanie'], ['Wkręty 240 mm', 'Mocowanie'],
+    ['Gąbka zabezpieczająca w rolce', 'Pakowanie'], ['Niebieskie gumy — podkłady', 'Pakowanie'],
+    ['Pochłaniacze', 'Pakowanie'], ['Taśma — szeroka', 'Pakowanie'], ['Taśma — wąska', 'Pakowanie'],
+    ['Worki sztauerskie', 'Pakowanie'],
+    ['Folia Alu', 'Folia'], ['Folia FCI', 'Folia'], ['Folia — mała rolka', 'Folia'],
+    ['Folia biała — 4 m szerokości', 'Folia'], ['Folia biała — 6 m szerokości', 'Folia'],
+    ['Folia biała — 8 m szerokości', 'Folia'], ['Folia biała — 10 m szerokości', 'Folia'],
+    ['Klamry', 'Pasy'], ['Kubuś (pas do czap)', 'Pasy'], ['Pas biały', 'Pasy'],
+    ['Pas pomarańczowy', 'Pasy'], ['Spinki', 'Pasy'],
+    ['Czujnik korozji', 'Czujniki'], ['Czujnik pochyłu', 'Czujniki'], ['Czujnik wilgoci', 'Czujniki'],
+    ['Czujnik wstrząsu', 'Czujniki'], ['Metalowe klapki', 'Czujniki']
+  ];
+
+  function seedItems() {
+    return SEED.map(function (row, i) {
+      return { id: 's' + i, name: row[0], cat: row[1], auto: 0, opole: 0 };
+    });
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && Array.isArray(s.items)) return s;
+      }
+    } catch (e) { /* uszkodzone dane — start od nowa */ }
+    return { items: seedItems(), collapsed: {}, tab: 'all', updated: null };
+  }
+
+  var state = loadState();
+  var undoSnapshot = null;
+  var toastTimer = null;
+  var currentItemId = null;
+  var newItemQty = { auto: 0, opole: 0 };
+
+  function save() {
+    state.updated = new Date().toISOString();
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function fmt(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return '0';
+    return (Math.round(n * 100) / 100).toString().replace('.', ',');
+  }
+
+  function findItem(id) {
+    for (var i = 0; i < state.items.length; i++) if (state.items[i].id === id) return state.items[i];
+    return null;
+  }
+
+  function allCats() {
+    var names = CATEGORIES.slice();
+    state.items.forEach(function (it) {
+      if (names.indexOf(it.cat) === -1) names.push(it.cat);
+    });
+    return names;
+  }
+
+  // ---------- render ----------
+  var listEl = document.getElementById('list');
+  var summaryEl = document.getElementById('summary');
+  var searchInput = document.getElementById('searchInput');
+
+  function render() {
+    var q = searchInput.value.trim().toLowerCase();
+    var tab = state.tab;
+    listEl.innerHTML = '';
+
+    var sumAuto = 0, sumOpole = 0, shown = 0;
+    var cats = allCats();
+
+    cats.forEach(function (catName, catIdx) {
+      var items = state.items.filter(function (it) {
+        return it.cat === catName && (!q || it.name.toLowerCase().indexOf(q) !== -1);
+      });
+      if (!items.length) return;
+      items.sort(function (a, b) { return a.name.localeCompare(b.name, 'pl'); });
+
+      var collapsed = !q && state.collapsed[catName];
+
+      var header = document.createElement('button');
+      header.className = 'cat-header' + (collapsed ? ' collapsed' : '');
+      header.innerHTML =
+        '<span class="cat-num">' + String(catIdx + 1).padStart(2, '0') + '</span>' +
+        '<span class="cat-name"></span><span class="cat-count">' + items.length + '</span>' +
+        '<span class="cat-chevron">▼</span>';
+      header.querySelector('.cat-name').textContent = catName;
+      header.addEventListener('click', function () {
+        state.collapsed[catName] = !state.collapsed[catName];
+        save(); render();
+      });
+      listEl.appendChild(header);
+
+      var box = document.createElement('div');
+      box.className = 'cat-items';
+
+      items.forEach(function (it) {
+        sumAuto += it.auto || 0;
+        sumOpole += it.opole || 0;
+        shown++;
+        if (collapsed) return;
+
+        var row = document.createElement('div');
+        row.className = 'item';
+
+        var nameBtn = document.createElement('button');
+        nameBtn.className = 'item-name';
+        nameBtn.textContent = it.name;
+        nameBtn.addEventListener('click', function () { openItemSheet(it.id); });
+        row.appendChild(nameBtn);
+
+        if (tab === 'all') {
+          var badges = document.createElement('button');
+          badges.className = 'item-badges';
+          badges.innerHTML =
+            '<span class="badge-line">Auto <b>' + fmt(it.auto) + '</b> · Opole <b>' + fmt(it.opole) + '</b></span>' +
+            '<span class="badge-total">Σ ' + fmt((it.auto || 0) + (it.opole || 0)) + '</span>';
+          badges.addEventListener('click', function () { openItemSheet(it.id); });
+          row.appendChild(badges);
+        } else {
+          row.appendChild(buildStepper(it, tab));
+        }
+        box.appendChild(row);
+      });
+
+      if (!collapsed) listEl.appendChild(box);
+    });
+
+    if (!shown) {
+      var note = document.createElement('div');
+      note.className = 'empty-note';
+      note.textContent = q ? 'Brak wyników dla „' + searchInput.value.trim() + '”' : 'Magazyn jest pusty — dodaj pierwszy materiał.';
+      listEl.appendChild(note);
+    }
+
+    if (tab === 'auto') summaryEl.innerHTML = 'Na aucie łącznie: <b>' + fmt(sumAuto) + '</b> szt.';
+    else if (tab === 'opole') summaryEl.innerHTML = 'W Opolu łącznie: <b>' + fmt(sumOpole) + '</b> szt.';
+    else summaryEl.innerHTML = shown + ' pozycji · Auto <b>' + fmt(sumAuto) + '</b> · Opole <b>' + fmt(sumOpole) + '</b> · Σ <b>' + fmt(sumAuto + sumOpole) + '</b>';
+  }
+
+  function buildStepper(it, loc) {
+    var wrap = document.createElement('div');
+    wrap.className = 'stepper';
+
+    var minus = document.createElement('button');
+    minus.className = 'step-btn';
+    minus.textContent = '−';
+    attachHold(minus, function () { changeQty(it.id, loc, -1); });
+
+    var val = document.createElement('button');
+    val.className = 'step-val' + (it[loc] ? '' : ' zero');
+    val.textContent = fmt(it[loc]);
+    val.addEventListener('click', function () { promptQty(it.id, loc); });
+
+    var plus = document.createElement('button');
+    plus.className = 'step-btn';
+    plus.textContent = '+';
+    attachHold(plus, function () { changeQty(it.id, loc, 1); });
+
+    wrap.appendChild(minus); wrap.appendChild(val); wrap.appendChild(plus);
+    return wrap;
+  }
+
+  // Przytrzymanie przycisku = szybkie zliczanie.
+  // Stop nasłuchuje na document, bo render() usuwa przycisk z DOM
+  // zanim dotrze pointerup — inaczej interwał nigdy by się nie zatrzymał.
+  var holdStop = null;
+  function endHold() {
+    if (holdStop) { holdStop(); holdStop = null; }
+  }
+  document.addEventListener('pointerup', endHold, true);
+  document.addEventListener('pointercancel', endHold, true);
+  window.addEventListener('blur', endHold);
+
+  function attachHold(btn, fn) {
+    btn.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      endHold();
+      fn();
+      var interval = null;
+      var timer = setTimeout(function () {
+        interval = setInterval(fn, 120);
+      }, 450);
+      holdStop = function () {
+        clearTimeout(timer);
+        clearInterval(interval);
+      };
+    });
+    btn.addEventListener('click', function (e) { e.preventDefault(); });
+    btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  }
+
+  // ---------- zmiany ilości ----------
+  function snapshot(msg) {
+    undoSnapshot = { items: JSON.parse(JSON.stringify(state.items)), msg: msg };
+  }
+
+  function changeQty(id, loc, delta) {
+    var it = findItem(id);
+    if (!it) return;
+    var v = (it[loc] || 0) + delta;
+    if (v < 0) v = 0;
+    if (v === it[loc]) return;
+    it[loc] = Math.round(v * 100) / 100;
+    save(); render(); refreshItemSheet();
+  }
+
+  function promptQty(id, loc) {
+    var it = findItem(id);
+    if (!it) return;
+    var label = loc === 'auto' ? 'Na aucie' : 'Magazyn Opole';
+    var input = prompt(it.name + ' — ' + label + ':', String(it[loc] || 0));
+    if (input === null) return;
+    var v = parseFloat(input.replace(',', '.'));
+    if (isNaN(v) || v < 0) return;
+    it[loc] = Math.round(v * 100) / 100;
+    save(); render(); refreshItemSheet();
+  }
+
+  // ---------- arkusze (bottom sheets) ----------
+  var overlay = document.getElementById('overlay');
+  var itemSheet = document.getElementById('itemSheet');
+  var addSheet = document.getElementById('addSheet');
+  var menuSheet = document.getElementById('menuSheet');
+
+  function openSheet(sheet) {
+    closeSheets();
+    overlay.classList.add('open');
+    sheet.classList.add('open');
+  }
+  function closeSheets() {
+    commitItemEdits();
+    overlay.classList.remove('open');
+    [itemSheet, addSheet, menuSheet].forEach(function (s) { s.classList.remove('open'); });
+    currentItemId = null;
+  }
+  overlay.addEventListener('click', closeSheets);
+
+  function fillCatSelect(sel, value) {
+    sel.innerHTML = '';
+    allCats().forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
+    });
+    if (value) sel.value = value;
+  }
+
+  function openItemSheet(id) {
+    var it = findItem(id);
+    if (!it) return;
+    openSheet(itemSheet); // najpierw: openSheet -> closeSheets zeruje currentItemId
+    currentItemId = id;
+    document.getElementById('editName').value = it.name;
+    fillCatSelect(document.getElementById('editCat'), it.cat);
+    refreshItemSheet();
+  }
+
+  function refreshItemSheet() {
+    if (!currentItemId) return;
+    var it = findItem(currentItemId);
+    if (!it) return;
+    document.getElementById('sheetTitle').textContent = it.name;
+    document.getElementById('sheetSub').textContent = it.cat;
+    var av = document.getElementById('sheetAutoVal');
+    var ov = document.getElementById('sheetOpoleVal');
+    av.textContent = fmt(it.auto);
+    ov.textContent = fmt(it.opole);
+    av.className = 'step-val' + (it.auto ? '' : ' zero');
+    ov.className = 'step-val' + (it.opole ? '' : ' zero');
+    document.getElementById('sheetTotal').textContent = fmt((it.auto || 0) + (it.opole || 0));
+  }
+
+  function commitItemEdits() {
+    if (!currentItemId) return;
+    var it = findItem(currentItemId);
+    if (!it) return;
+    var name = document.getElementById('editName').value.trim();
+    var cat = document.getElementById('editCat').value;
+    if (name && (name !== it.name || cat !== it.cat)) {
+      it.name = name;
+      it.cat = cat;
+      save(); render();
+    }
+  }
+
+  itemSheet.querySelectorAll('.step-btn[data-loc]').forEach(function (btn) {
+    attachHold(btn, function () {
+      changeQty(currentItemId, btn.dataset.loc, parseInt(btn.dataset.d, 10));
+    });
+  });
+  document.getElementById('sheetAutoVal').addEventListener('click', function () { promptQty(currentItemId, 'auto'); });
+  document.getElementById('sheetOpoleVal').addEventListener('click', function () { promptQty(currentItemId, 'opole'); });
+
+  document.getElementById('toOpole').addEventListener('click', function () { transfer('auto', 'opole'); });
+  document.getElementById('toAuto').addEventListener('click', function () { transfer('opole', 'auto'); });
+
+  function transfer(from, to) {
+    var it = findItem(currentItemId);
+    if (!it || (it[from] || 0) < 1) {
+      showToast(from === 'auto' ? 'Brak sztuk na aucie' : 'Brak sztuk w Opolu', false);
+      return;
+    }
+    it[from] = Math.round((it[from] - 1) * 100) / 100;
+    it[to] = Math.round(((it[to] || 0) + 1) * 100) / 100;
+    save(); render(); refreshItemSheet();
+  }
+
+  document.getElementById('closeItemBtn').addEventListener('click', closeSheets);
+
+  document.getElementById('deleteBtn').addEventListener('click', function () {
+    var it = findItem(currentItemId);
+    if (!it) return;
+    if (!confirm('Usunąć „' + it.name + '” z magazynu?')) return;
+    snapshot('Usunięto „' + it.name + '”');
+    state.items = state.items.filter(function (x) { return x.id !== currentItemId; });
+    currentItemId = null;
+    save(); render(); closeSheets();
+    showToast(undoSnapshot.msg, true);
+  });
+
+  // ---------- dodawanie ----------
+  document.getElementById('addBtn').addEventListener('click', function () {
+    newItemQty = { auto: 0, opole: 0 };
+    document.getElementById('newName').value = '';
+    document.getElementById('newAutoVal').textContent = '0';
+    document.getElementById('newOpoleVal').textContent = '0';
+    fillCatSelect(document.getElementById('newCat'));
+    openSheet(addSheet);
+    setTimeout(function () { document.getElementById('newName').focus(); }, 250);
+  });
+
+  addSheet.querySelectorAll('.step-btn[data-new]').forEach(function (btn) {
+    attachHold(btn, function () {
+      var loc = btn.dataset.new;
+      var v = newItemQty[loc] + parseInt(btn.dataset.d, 10);
+      newItemQty[loc] = v < 0 ? 0 : v;
+      document.getElementById(loc === 'auto' ? 'newAutoVal' : 'newOpoleVal').textContent = fmt(newItemQty[loc]);
+    });
+  });
+
+  document.getElementById('cancelAddBtn').addEventListener('click', closeSheets);
+  document.getElementById('saveAddBtn').addEventListener('click', function () {
+    var name = document.getElementById('newName').value.trim();
+    if (!name) { document.getElementById('newName').focus(); return; }
+    state.items.push({
+      id: 'u' + Date.now(),
+      name: name,
+      cat: document.getElementById('newCat').value,
+      auto: newItemQty.auto,
+      opole: newItemQty.opole
+    });
+    save(); render(); closeSheets();
+    showToast('Dodano „' + name + '”', false);
+  });
+
+  // ---------- menu ----------
+  document.getElementById('menuBtn').addEventListener('click', function () {
+    var d = state.updated ? new Date(state.updated) : null;
+    document.getElementById('menuInfo').textContent =
+      state.items.length + ' pozycji' +
+      (d ? ' · ostatnia zmiana: ' + d.toLocaleString('pl-PL') : '');
+    openSheet(menuSheet);
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', function () {
+    var data = JSON.stringify({ app: 'dalpack-magazyn', exported: new Date().toISOString(), items: state.items }, null, 2);
+    var blob = new Blob([data], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'magazyn-dalpack-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+
+  var importFile = document.getElementById('importFile');
+  document.getElementById('importBtn').addEventListener('click', function () { importFile.click(); });
+  importFile.addEventListener('change', function () {
+    var file = importFile.files[0];
+    importFile.value = '';
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(reader.result);
+        var items = Array.isArray(data) ? data : data.items;
+        if (!Array.isArray(items)) throw new Error('bad format');
+        var cleaned = items.filter(function (x) { return x && typeof x.name === 'string'; }).map(function (x, i) {
+          return {
+            id: x.id || 'i' + Date.now() + '_' + i,
+            name: x.name,
+            cat: typeof x.cat === 'string' ? x.cat : 'Mocowanie',
+            auto: typeof x.auto === 'number' ? x.auto : 0,
+            opole: typeof x.opole === 'number' ? x.opole : 0
+          };
+        });
+        if (!cleaned.length) throw new Error('empty');
+        snapshot('Zaimportowano dane');
+        state.items = cleaned;
+        save(); render(); closeSheets();
+        showToast('Zaimportowano ' + cleaned.length + ' pozycji', true);
+      } catch (e) {
+        alert('Nie udało się odczytać pliku — to nie jest kopia zapasowa magazynu.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (!confirm('Przywrócić listę startową? Wszystkie ilości zostaną wyzerowane.')) return;
+    snapshot('Przywrócono dane startowe');
+    state.items = seedItems();
+    save(); render(); closeSheets();
+    showToast('Przywrócono dane startowe', true);
+  });
+
+  // ---------- toast / undo ----------
+  var toastEl = document.getElementById('toast');
+  function showToast(msg, canUndo) {
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('undoBtn').style.display = canUndo ? '' : 'none';
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 5000);
+  }
+  document.getElementById('undoBtn').addEventListener('click', function () {
+    if (!undoSnapshot) return;
+    state.items = undoSnapshot.items;
+    undoSnapshot = null;
+    save(); render();
+    toastEl.classList.remove('show');
+  });
+
+  // ---------- zakładki i szukanie ----------
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var btn = e.target.closest('.tab');
+    if (!btn) return;
+    state.tab = btn.dataset.tab;
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t === btn);
+    });
+    save(); render();
+  });
+  var initialTab = document.querySelector('.tab[data-tab="' + state.tab + '"]');
+  if (initialTab) {
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t === initialTab);
+    });
+  } else {
+    state.tab = 'all';
+  }
+
+  searchInput.addEventListener('input', render);
+
+  render();
+})();
+</script>

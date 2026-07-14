@@ -1,12 +1,12 @@
 {
   "name": "Magazyn Dalpack",
   "short_name": "Magazyn",
-  "description": "Interaktywny magazyn materiałów — auto i magazyn Opole",
+  "description": "Interaktywny magazyn materiałów DAL-PACK — auto i magazyn Opole",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#101317",
-  "theme_color": "#2563eb",
+  "background_color": "#0C3A30",
+  "theme_color": "#0C3A30",
   "lang": "pl",
   "icons": [
     { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
