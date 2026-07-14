@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Magazyn Dalpack</title>
+<meta name="description" content="Interaktywny magazyn materiałów — auto i magazyn Opole">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Magazyn">
+</head>
+<body>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface2: #eef0f3;
+    --text: #1c1f23;
+    --text2: #6b7280;
+    --border: #e2e5e9;
+    --accent: #2563eb;
+    --accent-text: #ffffff;
+    --danger: #dc2626;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    --cat-mocowanie: #2383e2;
+    --cat-pakowanie: #d9730d;
+    --cat-folia: #0f7b6c;
+    --cat-pasy: #cb912f;
+    --cat-czujniki: #e03e3e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101317;
+      --surface: #1a1e24;
+      --surface2: #232830;
+      --text: #e8eaed;
+      --text2: #9aa3ad;
+      --border: #2c323b;
+      --accent: #3b82f6;
+      --shadow: 0 1px 3px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f5f7; --surface: #ffffff; --surface2: #eef0f3; --text: #1c1f23;
+    --text2: #6b7280; --border: #e2e5e9; --accent: #2563eb;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #101317; --surface: #1a1e24; --surface2: #232830; --text: #e8eaed;
+    --text2: #9aa3ad; --border: #2c323b; --accent: #3b82f6;
+    --shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    padding-bottom: 90px;
+  }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  input, select { font: inherit; color: var(--text); }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg);
+    padding: env(safe-area-inset-top) 12px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-row {
+    display: flex; align-items: center; gap: 8px; padding-top: 10px;
+  }
+  .topbar h1 { font-size: 1.25rem; margin: 0; flex: 1; font-weight: 700; }
+  .icon-btn {
+    width: 42px; height: 42px; border-radius: 12px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    font-size: 1.2rem;
+  }
+  .search-row { display: flex; gap: 8px; margin-top: 10px; }
+  .search-row input {
+    flex: 1; height: 44px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--surface); padding: 0 14px; outline: none; min-width: 0;
+  }
+  .search-row input:focus { border-color: var(--accent); }
+  .tabs { display: flex; gap: 6px; margin-top: 10px; }
+  .tab {
+    flex: 1; height: 42px; border-radius: 12px; font-weight: 600; font-size: .95rem;
+    background: var(--surface); border: 1px solid var(--border); color: var(--text2);
+    white-space: nowrap;
+  }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  .summary { margin-top: 8px; font-size: .82rem; color: var(--text2); text-align: center; }
+
+  .list { padding: 8px 12px 0; max-width: 640px; margin: 0 auto; }
+  .cat-header {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    padding: 14px 4px 6px; font-weight: 700; font-size: .95rem; text-align: left;
+  }
+  .cat-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+  .cat-count { color: var(--text2); font-weight: 400; font-size: .85rem; }
+  .cat-chevron { margin-left: auto; color: var(--text2); transition: transform .15s; }
+  .cat-header.collapsed .cat-chevron { transform: rotate(-90deg); }
+  .cat-items { border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+
+  .item {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); padding: 10px 12px;
+    border-bottom: 1px solid var(--border); min-height: 58px;
+  }
+  .item:last-child { border-bottom: none; }
+  .item-name {
+    flex: 1; text-align: left; padding: 6px 0; min-width: 0;
+    font-size: .98rem; overflow-wrap: anywhere;
+  }
+  .item-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: none; }
+  .badge-line { font-size: .9rem; white-space: nowrap; color: var(--text2); }
+  .badge-line b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .badge-total {
+    font-size: .8rem; background: var(--surface2); border-radius: 8px;
+    padding: 1px 8px; color: var(--text2); font-variant-numeric: tabular-nums;
+  }
+  .stepper { display: flex; align-items: center; gap: 2px; flex: none; }
+  .step-btn {
+    width: 46px; height: 46px; border-radius: 12px; font-size: 1.5rem; font-weight: 600;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; touch-action: manipulation;
+  }
+  .step-btn:active { background: var(--accent); color: var(--accent-text); }
+  .step-val {
+    min-width: 52px; text-align: center; font-weight: 700; font-size: 1.15rem;
+    font-variant-numeric: tabular-nums; padding: 8px 2px;
+  }
+  .step-val.zero { color: var(--text2); font-weight: 500; }
+  .empty-note { text-align: center; color: var(--text2); padding: 40px 20px; }
+
+  .fab {
+    position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 25;
+    height: 56px; padding: 0 22px; border-radius: 28px;
+    background: var(--accent); color: var(--accent-text);
+    font-size: 1rem; font-weight: 700; box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 40;
+    display: none;
+  }
+  .overlay.open { display: block; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    background: var(--surface); border-radius: 20px 20px 0 0;
+    padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+    max-width: 640px; margin: 0 auto;
+    max-height: 88vh; overflow-y: auto;
+    transform: translateY(105%); transition: transform .2s ease-out;
+    box-shadow: 0 -4px 30px rgba(0,0,0,.25);
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-grip { width: 44px; height: 5px; border-radius: 3px; background: var(--border); margin: 6px auto 14px; }
+  .sheet h2 { font-size: 1.15rem; margin: 0 0 4px; overflow-wrap: anywhere; }
+  .sheet .sub { color: var(--text2); font-size: .85rem; margin-bottom: 14px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: .82rem; color: var(--text2); margin-bottom: 5px; font-weight: 600; }
+  .field input, .field select {
+    width: 100%; height: 46px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--surface2); padding: 0 12px; outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+  .loc-block {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--surface2); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px;
+  }
+  .loc-block .loc-name { font-weight: 600; font-size: .95rem; }
+  .transfer-row { display: flex; gap: 10px; margin: 4px 0 14px; }
+  .transfer-btn {
+    flex: 1; height: 44px; border-radius: 12px; border: 1px dashed var(--border);
+    background: none; color: var(--text2); font-size: .88rem; font-weight: 600;
+  }
+  .transfer-btn:active { border-color: var(--accent); color: var(--accent); }
+  .sheet-total { text-align: center; color: var(--text2); font-size: .95rem; margin-bottom: 14px; }
+  .sheet-total b { color: var(--text); font-size: 1.1rem; }
+  .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+  .btn {
+    flex: 1; height: 50px; border-radius: 14px; font-weight: 700; font-size: 1rem;
+  }
+  .btn.primary { background: var(--accent); color: var(--accent-text); }
+  .btn.ghost { background: var(--surface2); border: 1px solid var(--border); }
+  .btn.danger-ghost { background: none; border: 1px solid var(--danger); color: var(--danger); flex: 0 0 auto; padding: 0 18px; }
+
+  .menu-item {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    padding: 15px 6px; font-size: 1rem; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .menu-item:last-of-type { border-bottom: none; }
+  .menu-item .mi-icon { font-size: 1.2rem; width: 28px; text-align: center; }
+  .menu-item.danger { color: var(--danger); }
+
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
+    bottom: calc(88px + env(safe-area-inset-bottom)); z-index: 60;
+    background: var(--text); color: var(--bg);
+    border-radius: 12px; padding: 10px 14px; font-size: .9rem;
+    display: flex; align-items: center; gap: 14px;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+    max-width: calc(100vw - 32px); box-shadow: var(--shadow);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .toast button { color: inherit; font-weight: 700; text-decoration: underline; flex: none; }
+</style>
+
+<header class="topbar">
+  <div class="topbar-row">
+    <h1>📦 Magazyn Dalpack</h1>
+    <button class="icon-btn" id="menuBtn" aria-label="Menu">⋮</button>
+  </div>
+  <div class="search-row">
+    <input type="search" id="searchInput" placeholder="Szukaj materiału…" autocomplete="off">
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="all">Wszystko</button>
+    <button class="tab" data-tab="auto">🚚 Auto</button>
+    <button class="tab" data-tab="opole">🏭 Opole</button>
+  </div>
+  <div class="summary" id="summary"></div>
+</header>
+
+<main class="list" id="list"></main>
+
+<button class="fab" id="addBtn">＋ Dodaj</button>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="sheet" id="itemSheet">
+  <div class="sheet-grip"></div>
+  <h2 id="sheetTitle"></h2>
+  <div class="sub" id="sheetSub"></div>
+  <div class="loc-block">
+    <span class="loc-name">🚚 Na aucie</span>
+    <div class="stepper">
+      <button class="step-btn" data-loc="auto" data-d="-1">−</button>
+      <button class="step-val" id="sheetAutoVal"></button>
+      <button class="step-btn" data-loc="auto" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="transfer-row">
+    <button class="transfer-btn" id="toOpole">⬇ Przenieś 1 do Opola</button>
+    <button class="transfer-btn" id="toAuto">⬆ Przenieś 1 na auto</button>
+  </div>
+  <div class="loc-block">
+    <span class="loc-name">🏭 Magazyn Opole</span>
+    <div class="stepper">
+      <button class="step-btn" data-loc="opole" data-d="-1">−</button>
+      <button class="step-val" id="sheetOpoleVal"></button>
+      <button class="step-btn" data-loc="opole" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="sheet-total">Razem: <b id="sheetTotal"></b></div>
+  <div class="field">
+    <label for="editName">Nazwa</label>
+    <input type="text" id="editName">
+  </div>
+  <div class="field">
+    <label for="editCat">Kategoria</label>
+    <select id="editCat"></select>
+  </div>
+  <div class="btn-row">
+    <button class="btn danger-ghost" id="deleteBtn">🗑</button>
+    <button class="btn primary" id="closeItemBtn">Gotowe</button>
+  </div>
+</div>
+
+<div class="sheet" id="addSheet">
+  <div class="sheet-grip"></div>
+  <h2>Nowy materiał</h2>
+  <div class="sub">Dodaj pozycję do magazynu</div>
+  <div class="field">
+    <label for="newName">Nazwa</label>
+    <input type="text" id="newName" placeholder="np. Wkręty 160 mm">
+  </div>
+  <div class="field">
+    <label for="newCat">Kategoria</label>
+    <select id="newCat"></select>
+  </div>
+  <div class="loc-block">
+    <span class="loc-name">🚚 Na aucie</span>
+    <div class="stepper">
+      <button class="step-btn" data-new="auto" data-d="-1">−</button>
+      <button class="step-val" id="newAutoVal">0</button>
+      <button class="step-btn" data-new="auto" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="loc-block">
+    <span class="loc-name">🏭 Magazyn Opole</span>
+    <div class="stepper">
+      <button class="step-btn" data-new="opole" data-d="-1">−</button>
+      <button class="step-val" id="newOpoleVal">0</button>
+      <button class="step-btn" data-new="opole" data-d="1">+</button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn ghost" id="cancelAddBtn">Anuluj</button>
+    <button class="btn primary" id="saveAddBtn">Dodaj</button>
+  </div>
+</div>
+
+<div class="sheet" id="menuSheet">
+  <div class="sheet-grip"></div>
+  <h2>Ustawienia</h2>
+  <div class="sub" id="menuInfo"></div>
+  <button class="menu-item" id="exportBtn"><span class="mi-icon">💾</span> Eksportuj dane (kopia zapasowa)</button>
+  <button class="menu-item" id="importBtn"><span class="mi-icon">📥</span> Importuj dane z pliku</button>
+  <button class="menu-item danger" id="resetBtn"><span class="mi-icon">♻️</span> Przywróć dane startowe</button>
+  <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+  <button id="undoBtn">Cofnij</button>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'dalpack-magazyn-v1';
+
+  var CATEGORIES = [
+    { name: 'Mocowanie', color: 'var(--cat-mocowanie)' },
+    { name: 'Pakowanie', color: 'var(--cat-pakowanie)' },
+    { name: 'Folia',     color: 'var(--cat-folia)' },
+    { name: 'Pasy',      color: 'var(--cat-pasy)' },
+    { name: 'Czujniki',  color: 'var(--cat-czujniki)' }
+  ];
+
+  // Stan startowy — odwzorowanie bazy Notion „Magazyn materiałów”
+  var SEED = [
+    ['Gwoździe — małe', 'Mocowanie'], ['Gwoździe — średnie', 'Mocowanie'], ['Gwoździe — duże', 'Mocowanie'],
+    ['Haki', 'Mocowanie'], ['Metalowe uszy', 'Mocowanie'],
+    ['Okucia — lewe', 'Mocowanie'], ['Okucia — prawe', 'Mocowanie'], ['Okucia — podłużne', 'Mocowanie'],
+    ['Podkładki gumowe', 'Mocowanie'],
+    ['Podkładki metalowe — małe', 'Mocowanie'], ['Podkładki metalowe — średnie', 'Mocowanie'], ['Podkładki metalowe — duże', 'Mocowanie'],
+    ['Wkręty 120 mm', 'Mocowanie'], ['Wkręty 140 mm', 'Mocowanie'], ['Wkręty 180 mm', 'Mocowanie'],
+    ['Wkręty 220 mm', 'Mocowanie'], ['Wkręty 240 mm', 'Mocowanie'],
+    ['Gąbka zabezpieczająca w rolce', 'Pakowanie'], ['Niebieskie gumy — podkłady', 'Pakowanie'],
+    ['Pochłaniacze', 'Pakowanie'], ['Taśma — szeroka', 'Pakowanie'], ['Taśma — wąska', 'Pakowanie'],
+    ['Worki sztauerskie', 'Pakowanie'],
+    ['Folia Alu', 'Folia'], ['Folia FCI', 'Folia'], ['Folia — mała rolka', 'Folia'],
+    ['Folia biała — 4 m szerokości', 'Folia'], ['Folia biała — 6 m szerokości', 'Folia'],
+    ['Folia biała — 8 m szerokości', 'Folia'], ['Folia biała — 10 m szerokości', 'Folia'],
+    ['Klamry', 'Pasy'], ['Kubuś (pas do czap)', 'Pasy'], ['Pas biały', 'Pasy'],
+    ['Pas pomarańczowy', 'Pasy'], ['Spinki', 'Pasy'],
+    ['Czujnik korozji', 'Czujniki'], ['Czujnik pochyłu', 'Czujniki'], ['Czujnik wilgoci', 'Czujniki'],
+    ['Czujnik wstrząsu', 'Czujniki'], ['Metalowe klapki', 'Czujniki']
+  ];
+
+  function seedItems() {
+    return SEED.map(function (row, i) {
+      return { id: 's' + i, name: row[0], cat: row[1], auto: 0, opole: 0 };
+    });
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && Array.isArray(s.items)) return s;
+      }
+    } catch (e) { /* uszkodzone dane — start od nowa */ }
+    return { items: seedItems(), collapsed: {}, tab: 'all', updated: null };
+  }
+
+  var state = loadState();
+  var undoSnapshot = null;
+  var toastTimer = null;
+  var currentItemId = null;
+  var newItemQty = { auto: 0, opole: 0 };
+
+  function save() {
+    state.updated = new Date().toISOString();
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function fmt(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return '0';
+    return (Math.round(n * 100) / 100).toString().replace('.', ',');
+  }
+
+  function findItem(id) {
+    for (var i = 0; i < state.items.length; i++) if (state.items[i].id === id) return state.items[i];
+    return null;
+  }
+
+  function catColor(name) {
+    for (var i = 0; i < CATEGORIES.length; i++) if (CATEGORIES[i].name === name) return CATEGORIES[i].color;
+    return 'var(--text2)';
+  }
+
+  function allCats() {
+    var names = CATEGORIES.map(function (c) { return c.name; });
+    state.items.forEach(function (it) {
+      if (names.indexOf(it.cat) === -1) names.push(it.cat);
+    });
+    return names;
+  }
+
+  // ---------- render ----------
+  var listEl = document.getElementById('list');
+  var summaryEl = document.getElementById('summary');
+  var searchInput = document.getElementById('searchInput');
+
+  function render() {
+    var q = searchInput.value.trim().toLowerCase();
+    var tab = state.tab;
+    listEl.innerHTML = '';
+
+    var sumAuto = 0, sumOpole = 0, shown = 0;
+    var cats = allCats();
+
+    cats.forEach(function (catName) {
+      var items = state.items.filter(function (it) {
+        return it.cat === catName && (!q || it.name.toLowerCase().indexOf(q) !== -1);
+      });
+      if (!items.length) return;
+      items.sort(function (a, b) { return a.name.localeCompare(b.name, 'pl'); });
+
+      var collapsed = !q && state.collapsed[catName];
+
+      var header = document.createElement('button');
+      header.className = 'cat-header' + (collapsed ? ' collapsed' : '');
+      header.innerHTML =
+        '<span class="cat-dot" style="background:' + catColor(catName) + '"></span>' +
+        '<span></span><span class="cat-count">' + items.length + '</span>' +
+        '<span class="cat-chevron">▾</span>';
+      header.children[1].textContent = catName;
+      header.addEventListener('click', function () {
+        state.collapsed[catName] = !state.collapsed[catName];
+        save(); render();
+      });
+      listEl.appendChild(header);
+
+      var box = document.createElement('div');
+      box.className = 'cat-items';
+
+      items.forEach(function (it) {
+        sumAuto += it.auto || 0;
+        sumOpole += it.opole || 0;
+        shown++;
+        if (collapsed) return;
+
+        var row = document.createElement('div');
+        row.className = 'item';
+
+        var nameBtn = document.createElement('button');
+        nameBtn.className = 'item-name';
+        nameBtn.textContent = it.name;
+        nameBtn.addEventListener('click', function () { openItemSheet(it.id); });
+        row.appendChild(nameBtn);
+
+        if (tab === 'all') {
+          var badges = document.createElement('button');
+          badges.className = 'item-badges';
+          badges.innerHTML =
+            '<span class="badge-line">🚚 <b>' + fmt(it.auto) + '</b> · 🏭 <b>' + fmt(it.opole) + '</b></span>' +
+            '<span class="badge-total">Σ ' + fmt((it.auto || 0) + (it.opole || 0)) + '</span>';
+          badges.addEventListener('click', function () { openItemSheet(it.id); });
+          row.appendChild(badges);
+        } else {
+          row.appendChild(buildStepper(it, tab));
+        }
+        box.appendChild(row);
+      });
+
+      if (!collapsed) listEl.appendChild(box);
+    });
+
+    if (!shown) {
+      var note = document.createElement('div');
+      note.className = 'empty-note';
+      note.textContent = q ? 'Brak wyników dla „' + searchInput.value.trim() + '”' : 'Magazyn jest pusty — dodaj pierwszy materiał.';
+      listEl.appendChild(note);
+    }
+
+    if (tab === 'auto') summaryEl.textContent = 'Na aucie łącznie: ' + fmt(sumAuto) + ' szt.';
+    else if (tab === 'opole') summaryEl.textContent = 'W Opolu łącznie: ' + fmt(sumOpole) + ' szt.';
+    else summaryEl.textContent = shown + ' pozycji · 🚚 ' + fmt(sumAuto) + ' · 🏭 ' + fmt(sumOpole) + ' · Σ ' + fmt(sumAuto + sumOpole);
+  }
+
+  function buildStepper(it, loc) {
+    var wrap = document.createElement('div');
+    wrap.className = 'stepper';
+
+    var minus = document.createElement('button');
+    minus.className = 'step-btn';
+    minus.textContent = '−';
+    attachHold(minus, function () { changeQty(it.id, loc, -1); });
+
+    var val = document.createElement('button');
+    val.className = 'step-val' + (it[loc] ? '' : ' zero');
+    val.textContent = fmt(it[loc]);
+    val.addEventListener('click', function () { promptQty(it.id, loc); });
+
+    var plus = document.createElement('button');
+    plus.className = 'step-btn';
+    plus.textContent = '+';
+    attachHold(plus, function () { changeQty(it.id, loc, 1); });
+
+    wrap.appendChild(minus); wrap.appendChild(val); wrap.appendChild(plus);
+    return wrap;
+  }
+
+  // Przytrzymanie przycisku = szybkie zliczanie.
+  // Stop nasłuchuje na document, bo render() usuwa przycisk z DOM
+  // zanim dotrze pointerup — inaczej interwał nigdy by się nie zatrzymał.
+  var holdStop = null;
+  function endHold() {
+    if (holdStop) { holdStop(); holdStop = null; }
+  }
+  document.addEventListener('pointerup', endHold, true);
+  document.addEventListener('pointercancel', endHold, true);
+  window.addEventListener('blur', endHold);
+
+  function attachHold(btn, fn) {
+    btn.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      endHold();
+      fn();
+      var interval = null;
+      var timer = setTimeout(function () {
+        interval = setInterval(fn, 120);
+      }, 450);
+      holdStop = function () {
+        clearTimeout(timer);
+        clearInterval(interval);
+      };
+    });
+    btn.addEventListener('click', function (e) { e.preventDefault(); });
+    btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  }
+
+  // ---------- zmiany ilości ----------
+  function snapshot(msg) {
+    undoSnapshot = { items: JSON.parse(JSON.stringify(state.items)), msg: msg };
+  }
+
+  function changeQty(id, loc, delta) {
+    var it = findItem(id);
+    if (!it) return;
+    var v = (it[loc] || 0) + delta;
+    if (v < 0) v = 0;
+    if (v === it[loc]) return;
+    it[loc] = Math.round(v * 100) / 100;
+    save(); render(); refreshItemSheet();
+  }
+
+  function promptQty(id, loc) {
+    var it = findItem(id);
+    if (!it) return;
+    var label = loc === 'auto' ? 'Na aucie' : 'Magazyn Opole';
+    var input = prompt(it.name + ' — ' + label + ':', String(it[loc] || 0));
+    if (input === null) return;
+    var v = parseFloat(input.replace(',', '.'));
+    if (isNaN(v) || v < 0) return;
+    it[loc] = Math.round(v * 100) / 100;
+    save(); render(); refreshItemSheet();
+  }
+
+  // ---------- arkusze (bottom sheets) ----------
+  var overlay = document.getElementById('overlay');
+  var itemSheet = document.getElementById('itemSheet');
+  var addSheet = document.getElementById('addSheet');
+  var menuSheet = document.getElementById('menuSheet');
+
+  function openSheet(sheet) {
+    closeSheets();
+    overlay.classList.add('open');
+    sheet.classList.add('open');
+  }
+  function closeSheets() {
+    commitItemEdits();
+    overlay.classList.remove('open');
+    [itemSheet, addSheet, menuSheet].forEach(function (s) { s.classList.remove('open'); });
+    currentItemId = null;
+  }
+  overlay.addEventListener('click', closeSheets);
+
+  function fillCatSelect(sel, value) {
+    sel.innerHTML = '';
+    allCats().forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      sel.appendChild(o);
+    });
+    if (value) sel.value = value;
+  }
+
+  function openItemSheet(id) {
+    var it = findItem(id);
+    if (!it) return;
+    openSheet(itemSheet); // najpierw: openSheet -> closeSheets zeruje currentItemId
+    currentItemId = id;
+    document.getElementById('editName').value = it.name;
+    fillCatSelect(document.getElementById('editCat'), it.cat);
+    refreshItemSheet();
+  }
+
+  function refreshItemSheet() {
+    if (!currentItemId) return;
+    var it = findItem(currentItemId);
+    if (!it) return;
+    document.getElementById('sheetTitle').textContent = it.name;
+    document.getElementById('sheetSub').textContent = it.cat;
+    var av = document.getElementById('sheetAutoVal');
+    var ov = document.getElementById('sheetOpoleVal');
+    av.textContent = fmt(it.auto);
+    ov.textContent = fmt(it.opole);
+    av.className = 'step-val' + (it.auto ? '' : ' zero');
+    ov.className = 'step-val' + (it.opole ? '' : ' zero');
+    document.getElementById('sheetTotal').textContent = fmt((it.auto || 0) + (it.opole || 0));
+  }
+
+  function commitItemEdits() {
+    if (!currentItemId) return;
+    var it = findItem(currentItemId);
+    if (!it) return;
+    var name = document.getElementById('editName').value.trim();
+    var cat = document.getElementById('editCat').value;
+    if (name && (name !== it.name || cat !== it.cat)) {
+      it.name = name;
+      it.cat = cat;
+      save(); render();
+    }
+  }
+
+  itemSheet.querySelectorAll('.step-btn[data-loc]').forEach(function (btn) {
+    attachHold(btn, function () {
+      changeQty(currentItemId, btn.dataset.loc, parseInt(btn.dataset.d, 10));
+    });
+  });
+  document.getElementById('sheetAutoVal').addEventListener('click', function () { promptQty(currentItemId, 'auto'); });
+  document.getElementById('sheetOpoleVal').addEventListener('click', function () { promptQty(currentItemId, 'opole'); });
+
+  document.getElementById('toOpole').addEventListener('click', function () { transfer('auto', 'opole'); });
+  document.getElementById('toAuto').addEventListener('click', function () { transfer('opole', 'auto'); });
+
+  function transfer(from, to) {
+    var it = findItem(currentItemId);
+    if (!it || (it[from] || 0) < 1) {
+      showToast(from === 'auto' ? 'Brak sztuk na aucie' : 'Brak sztuk w Opolu', false);
+      return;
+    }
+    it[from] = Math.round((it[from] - 1) * 100) / 100;
+    it[to] = Math.round(((it[to] || 0) + 1) * 100) / 100;
+    save(); render(); refreshItemSheet();
+  }
+
+  document.getElementById('closeItemBtn').addEventListener('click', closeSheets);
+
+  document.getElementById('deleteBtn').addEventListener('click', function () {
+    var it = findItem(currentItemId);
+    if (!it) return;
+    if (!confirm('Usunąć „' + it.name + '” z magazynu?')) return;
+    snapshot('Usunięto „' + it.name + '”');
+    state.items = state.items.filter(function (x) { return x.id !== currentItemId; });
+    currentItemId = null;
+    save(); render(); closeSheets();
+    showToast(undoSnapshot.msg, true);
+  });
+
+  // ---------- dodawanie ----------
+  document.getElementById('addBtn').addEventListener('click', function () {
+    newItemQty = { auto: 0, opole: 0 };
+    document.getElementById('newName').value = '';
+    document.getElementById('newAutoVal').textContent = '0';
+    document.getElementById('newOpoleVal').textContent = '0';
+    fillCatSelect(document.getElementById('newCat'));
+    openSheet(addSheet);
+    setTimeout(function () { document.getElementById('newName').focus(); }, 250);
+  });
+
+  addSheet.querySelectorAll('.step-btn[data-new]').forEach(function (btn) {
+    attachHold(btn, function () {
+      var loc = btn.dataset.new;
+      var v = newItemQty[loc] + parseInt(btn.dataset.d, 10);
+      newItemQty[loc] = v < 0 ? 0 : v;
+      document.getElementById(loc === 'auto' ? 'newAutoVal' : 'newOpoleVal').textContent = fmt(newItemQty[loc]);
+    });
+  });
+
+  document.getElementById('cancelAddBtn').addEventListener('click', closeSheets);
+  document.getElementById('saveAddBtn').addEventListener('click', function () {
+    var name = document.getElementById('newName').value.trim();
+    if (!name) { document.getElementById('newName').focus(); return; }
+    state.items.push({
+      id: 'u' + Date.now(),
+      name: name,
+      cat: document.getElementById('newCat').value,
+      auto: newItemQty.auto,
+      opole: newItemQty.opole
+    });
+    save(); render(); closeSheets();
+    showToast('Dodano „' + name + '”', false);
+  });
+
+  // ---------- menu ----------
+  document.getElementById('menuBtn').addEventListener('click', function () {
+    var d = state.updated ? new Date(state.updated) : null;
+    document.getElementById('menuInfo').textContent =
+      state.items.length + ' pozycji' +
+      (d ? ' · ostatnia zmiana: ' + d.toLocaleString('pl-PL') : '');
+    openSheet(menuSheet);
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', function () {
+    var data = JSON.stringify({ app: 'dalpack-magazyn', exported: new Date().toISOString(), items: state.items }, null, 2);
+    var blob = new Blob([data], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'magazyn-dalpack-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+
+  var importFile = document.getElementById('importFile');
+  document.getElementById('importBtn').addEventListener('click', function () { importFile.click(); });
+  importFile.addEventListener('change', function () {
+    var file = importFile.files[0];
+    importFile.value = '';
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(reader.result);
+        var items = Array.isArray(data) ? data : data.items;
+        if (!Array.isArray(items)) throw new Error('bad format');
+        var cleaned = items.filter(function (x) { return x && typeof x.name === 'string'; }).map(function (x, i) {
+          return {
+            id: x.id || 'i' + Date.now() + '_' + i,
+            name: x.name,
+            cat: typeof x.cat === 'string' ? x.cat : 'Mocowanie',
+            auto: typeof x.auto === 'number' ? x.auto : 0,
+            opole: typeof x.opole === 'number' ? x.opole : 0
+          };
+        });
+        if (!cleaned.length) throw new Error('empty');
+        snapshot('Zaimportowano dane');
+        state.items = cleaned;
+        save(); render(); closeSheets();
+        showToast('Zaimportowano ' + cleaned.length + ' pozycji', true);
+      } catch (e) {
+        alert('Nie udało się odczytać pliku — to nie jest kopia zapasowa magazynu.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (!confirm('Przywrócić listę startową? Wszystkie ilości zostaną wyzerowane.')) return;
+    snapshot('Przywrócono dane startowe');
+    state.items = seedItems();
+    save(); render(); closeSheets();
+    showToast('Przywrócono dane startowe', true);
+  });
+
+  // ---------- toast / undo ----------
+  var toastEl = document.getElementById('toast');
+  function showToast(msg, canUndo) {
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('undoBtn').style.display = canUndo ? '' : 'none';
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 5000);
+  }
+  document.getElementById('undoBtn').addEventListener('click', function () {
+    if (!undoSnapshot) return;
+    state.items = undoSnapshot.items;
+    undoSnapshot = null;
+    save(); render();
+    toastEl.classList.remove('show');
+  });
+
+  // ---------- zakładki i szukanie ----------
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var btn = e.target.closest('.tab');
+    if (!btn) return;
+    state.tab = btn.dataset.tab;
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t === btn);
+    });
+    save(); render();
+  });
+  var initialTab = document.querySelector('.tab[data-tab="' + state.tab + '"]');
+  if (initialTab) {
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t === initialTab);
+    });
+  } else {
+    state.tab = 'all';
+  }
+
+  searchInput.addEventListener('input', render);
+
+  render();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
